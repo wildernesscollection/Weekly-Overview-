@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wilderness Collection: Owner Dashboard, Week 36</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#141F1A;
+    --ink-2:#1C2921;
+    --ink-3:#233128;
+    --line: rgba(241,236,223,0.14);
+    --line-strong: rgba(241,236,223,0.28);
+    --paper:#F1ECDF;
+    --text-hi:#F3EFE4;
+    --text-lo:#A9B3A3;
+    --text-faint:#7C8A7C;
+    --brass:#C7A15A;
+    --brass-hi:#E0C384;
+    --moss:#8AAE73;
+    --moss-dim:#5F7A50;
+    --rust:#C7623F;
+    --rust-dim: rgba(199,98,63,0.16);
+    --amber:#D9A441;
+    --amber-dim: rgba(217,164,65,0.16);
+    --ce:#8AAE73;
+    --wr:#C7A15A;
+    --radius: 3px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--text-hi);
+    font-family:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  .num{ font-variant-numeric: tabular-nums; font-feature-settings:"tnum" 1; }
+  .serif{ font-family:'Fraunces', serif; }
+  a{color:inherit;}
+
+  /* ===== Header / masthead ===== */
+  .masthead{
+    max-width:1180px;
+    margin:0 auto;
+    padding:38px 32px 26px;
+    border-bottom:1px solid var(--line-strong);
+  }
+  .masthead-top{
+    display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap;
+  }
+  .brandline{
+    display:flex; align-items:center; gap:10px;
+    text-transform:uppercase; letter-spacing:.14em; font-size:11.5px; color:var(--brass-hi);
+    font-weight:600;
+  }
+  .brandline .dot{width:5px;height:5px;border-radius:50%;background:var(--brass);display:inline-block;}
+  h1.title{
+    font-family:'Fraunces', serif; font-weight:500; font-style:italic;
+    font-size:clamp(28px,4vw,40px); line-height:1.08; margin:10px 0 6px; color:var(--text-hi);
+  }
+  .subtitle{ color:var(--text-lo); font-size:15px; max-width:640px; line-height:1.5;}
+  .status-block{ text-align:right; }
+  .status-pill{
+    display:inline-flex; align-items:center; gap:8px;
+    border:1px solid var(--amber); color:var(--amber);
+    padding:7px 14px; border-radius:100px; font-size:12.5px; font-weight:600;
+    letter-spacing:.06em; text-transform:uppercase;
+  }
+  .status-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);}
+  .status-note{ color:var(--text-faint); font-size:12.5px; margin-top:8px; max-width:220px; }
+  .coverage{ color:var(--text-faint); font-size:12.5px; margin-top:16px; }
+
+  /* ===== Ledger KPI strip ===== */
+  .ledger{
+    max-width:1180px; margin:0 auto; padding:0 32px;
+    display:grid; grid-template-columns:repeat(5,1fr);
+    border-bottom:1px solid var(--line-strong);
+  }
+  .ledger-item{
+    padding:22px 20px; border-right:1px solid var(--line);
+  }
+  .ledger-item:last-child{border-right:none;}
+  .ledger-label{ font-size:11px; text-transform:uppercase; letter-spacing:.09em; color:var(--text-faint); margin-bottom:10px;}
+  .ledger-value{ font-size:26px; font-weight:600; line-height:1.05; }
+  .ledger-sub{ font-size:12.5px; color:var(--text-lo); margin-top:6px; }
+  .flag-up{color:var(--moss);}
+  .flag-down{color:var(--rust);}
+  .flag-flat{color:var(--text-lo);}
+
+  /* ===== Section wrapper ===== */
+  .section{ max-width:1180px; margin:0 auto; padding:44px 32px; border-bottom:1px solid var(--line);}
+  .section:last-of-type{border-bottom:none;}
+  .section-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:22px; gap:16px; flex-wrap:wrap;}
+  .section-eyebrow{ font-size:12px; color:var(--text-faint); }
+  h2.section-title{
+    font-family:'Fraunces', serif; font-weight:500; font-size:23px; margin:2px 0 0; color:var(--text-hi);
+  }
+
+  /* ===== Property comparison ===== */
+  .camps{ display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--line-strong); border-radius:var(--radius); overflow:hidden;}
+  .camp{ padding:26px 28px; }
+  .camp + .camp{ border-left:1px solid var(--line-strong);}
+  .camp-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;}
+  .camp-name{ font-family:'Fraunces', serif; font-size:19px; font-weight:500; display:flex; align-items:center; gap:9px;}
+  .camp-swatch{ width:9px; height:9px; border-radius:50%; display:inline-block;}
+  .camp-name.ce .camp-swatch{background:var(--ce);}
+  .camp-name.wr .camp-swatch{background:var(--wr);}
+  .camp-tag{ font-size:11px; padding:4px 9px; border-radius:100px; font-weight:600; letter-spacing:.04em;}
+  .tag-good{ background:rgba(138,174,115,0.14); color:var(--moss);}
+  .tag-bad{ background:var(--rust-dim); color:var(--rust);}
+  .camp-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px 20px; margin-bottom:18px;}
+  .metric-label{ font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--text-faint); margin-bottom:5px;}
+  .metric-value{ font-size:20px; font-weight:600; }
+  .metric-vs{ font-size:12px; color:var(--text-lo); margin-top:3px; }
+  .camp-note{
+    font-size:13px; line-height:1.55; color:var(--text-lo); padding-top:16px; border-top:1px solid var(--line);
+  }
+  .camp-note b{color:var(--text-hi); font-weight:600;}
+
+  /* ===== Charts ===== */
+  .chart-grid{ display:grid; grid-template-columns:1.15fr 1fr 1fr; gap:20px; }
+  .chart-card{ border:1px solid var(--line-strong); border-radius:var(--radius); padding:20px 20px 12px; background:var(--ink-2); }
+  .chart-title{ font-size:13px; font-weight:600; margin-bottom:2px;}
+  .chart-caption{ font-size:11.5px; color:var(--text-faint); margin-bottom:14px;}
+  .chart-wrap{ position:relative; height:230px; }
+
+  /* ===== Status timeline ===== */
+  .status-timeline{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+  .tl-item{ display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .tl-dot{ width:11px; height:11px; border-radius:50%; border:1.5px solid var(--line-strong); background:transparent; }
+  .tl-dot.amber{ background:var(--amber); border-color:var(--amber); }
+  .tl-dot.red{ background:var(--rust); border-color:var(--rust); }
+  .tl-dot.green{ background:var(--moss); border-color:var(--moss); }
+  .tl-label{ font-size:10px; color:var(--text-faint); letter-spacing:.02em; }
+  .trend-note{ font-size:12px; color:var(--text-faint); margin-top:16px; line-height:1.65; max-width:900px; }
+
+  /* ===== Red flags ===== */
+  .flags{ display:flex; flex-direction:column; }
+  .flag-row{
+    display:grid; grid-template-columns: 3px 1.7fr 1fr 100px 120px;
+    gap:18px; align-items:start;
+    padding:16px 0; border-bottom:1px solid var(--line);
+  }
+  .flag-row:last-child{border-bottom:none;}
+  .flag-bar{ align-self:stretch; border-radius:2px; }
+  .sev-critical .flag-bar{background:var(--rust);}
+  .sev-high .flag-bar{background:var(--amber);}
+  .sev-watch .flag-bar{background:var(--text-faint);}
+  .flag-issue{ font-size:14px; line-height:1.5; }
+  .flag-issue b{font-weight:600;}
+  .flag-impact{ font-size:12.5px; color:var(--text-lo); line-height:1.5;}
+  .flag-resp{ font-size:12px; color:var(--text-faint); }
+  .flag-date{ font-size:12px; color:var(--brass-hi); text-align:right; font-weight:500;}
+  .flags-head{
+    display:grid; grid-template-columns: 3px 1.7fr 1fr 100px 120px; gap:18px;
+    font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint);
+    padding-bottom:10px; border-bottom:1px solid var(--line-strong);
+  }
+
+  /* ===== Resolved this cycle ===== */
+  .resolved{ display:flex; flex-direction:column; gap:14px; }
+  .resolved-item{ display:flex; gap:12px; align-items:flex-start; }
+  .resolved-check{
+    width:18px; height:18px; border-radius:50%; border:1px solid var(--moss); color:var(--moss);
+    display:flex; align-items:center; justify-content:center; font-size:11px; flex:none; margin-top:2px;
+  }
+  .resolved-text{ font-size:13.5px; line-height:1.55; color:var(--text-lo); }
+  .resolved-text b{ color:var(--text-hi); font-weight:600; }
+
+  /* ===== two-col layout ===== */
+  .two-col{ display:grid; grid-template-columns: 1.55fr 1fr; gap:36px; align-items:start;}
+
+  /* ===== financial table ===== */
+  table.fin{ width:100%; border-collapse:collapse; font-size:13px; }
+  table.fin th{ text-align:right; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); font-weight:600; padding:0 0 10px; border-bottom:1px solid var(--line-strong);}
+  table.fin th:first-child, table.fin td:first-child{ text-align:left; }
+  table.fin td{ text-align:right; padding:11px 0; border-bottom:1px solid var(--line); }
+  table.fin tr:last-child td{ border-bottom:none; }
+  table.fin .neg{ color:var(--rust); font-weight:600;}
+  table.fin .pos{ color:var(--moss); font-weight:600;}
+  table.fin .grp-label{ font-weight:600; color:var(--text-hi);}
+
+  /* ===== footer ===== */
+  footer{ max-width:1180px; margin:0 auto; padding:30px 32px 46px; color:var(--text-faint); font-size:12px; line-height:1.7;}
+  footer .foot-title{ color:var(--text-lo); font-weight:600; margin-bottom:6px; }
+
+  @media (max-width:860px){
+    .ledger{grid-template-columns:repeat(2,1fr);}
+    .ledger-item:nth-child(2n){border-right:none;}
+    .camps{grid-template-columns:1fr;}
+    .camp+.camp{border-left:none; border-top:1px solid var(--line-strong);}
+    .chart-grid{grid-template-columns:1fr;}
+    .two-col{grid-template-columns:1fr;}
+    .flag-row, .flags-head{grid-template-columns: 3px 1fr; }
+    .flag-impact, .flag-resp, .flag-date{display:none;}
+    .status-block{text-align:left;}
+    .masthead-top{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="masthead-top">
+    <div>
+      <div class="brandline"><span class="dot"></span>Wilderness Collection · Owner Dashboard</div>
+      <h1 class="title">Week 36 performance, at a glance</h1>
+      <div class="subtitle">Craters Edge &amp; Warangi Ridge · 1–8 September 2026 · prepared by the Operations Manager for the Owner</div>
+    </div>
+    <div class="status-block">
+      <span class="status-pill"><span class="dot"></span>Amber, downgraded from red</span>
+      <div class="status-note">Two of last cycle's most severe findings have been resolved this week. See "Resolved this cycle" below.</div>
+    </div>
+  </div>
+  <div class="coverage">Financial position refreshed to Day 6 (6 Sept 2026) Daily Sales Report · baseline week: Week 35, 22–30 Aug</div>
+</div>
+
+<div class="ledger">
+  <div class="ledger-item">
+    <div class="ledger-label">Combined MTD sales</div>
+    <div class="ledger-value num">$91,931</div>
+    <div class="ledger-sub flag-down num">vs $234,678 budget · −60.8%</div>
+  </div>
+  <div class="ledger-item">
+    <div class="ledger-label">Combined YTD sales</div>
+    <div class="ledger-value num">$2.36M</div>
+    <div class="ledger-sub flag-down num">vs $5.93M budget · −60.2%</div>
+  </div>
+  <div class="ledger-item">
+    <div class="ledger-label">CE cash on hand</div>
+    <div class="ledger-value num">TZS 9.9M</div>
+    <div class="ledger-sub flag-down num">from TZS 67.8M · 4→6 Sept</div>
+  </div>
+  <div class="ledger-item">
+    <div class="ledger-label">CE forward booking</div>
+    <div class="ledger-value num">45.3%</div>
+    <div class="ledger-sub flag-up num">next 10 days · up from 37.9%</div>
+  </div>
+  <div class="ledger-item">
+    <div class="ledger-label">WR forward booking</div>
+    <div class="ledger-value num">6.3%</div>
+    <div class="ledger-sub flag-down num">next 10 days · down from 26.7%</div>
+  </div>
+</div>
+
+<!-- ===== Momentum / running history ===== -->
+<div class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">Running weekly history · this section grows each cycle</div>
+      <h2 class="section-title">Momentum across weeks</h2>
+    </div>
+    <div class="status-timeline" id="statusTimeline"></div>
+  </div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">Occupancy % by week</div>
+      <div class="chart-caption">Craters Edge vs Warangi Ridge</div>
+      <div class="chart-wrap"><canvas id="trendOcc"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Forward booking signal, next 10 days</div>
+      <div class="chart-caption">As reported at each week's cycle</div>
+      <div class="chart-wrap"><canvas id="trendFwd"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Secondary revenue by week</div>
+      <div class="chart-caption">Bar + Shop + Activity + Meals + Spa</div>
+      <div class="chart-wrap"><canvas id="trendSecRev"></canvas></div>
+    </div>
+  </div>
+  <p class="trend-note">Craters Edge's Week 35 operations report and Warangi Ridge's Week 34 report were never supplied, so those points show as gaps rather than estimates. Week 36 is the first cycle with a full Owner Report compiled, so the status timeline above begins there: earlier weeks show operational figures only, with no formal status assessment attached.</p>
+</div>
+
+<!-- ===== Camps comparison ===== -->
+<div class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">Property comparison</div>
+      <h2 class="section-title">Two camps, two very different stories</h2>
+    </div>
+  </div>
+  <div class="camps">
+    <div class="camp">
+      <div class="camp-head">
+        <div class="camp-name ce"><span class="camp-swatch"></span>Craters Edge</div>
+        <div class="camp-tag tag-good">Trading ahead of last year</div>
+      </div>
+      <div class="camp-grid">
+        <div>
+          <div class="metric-label">Occupancy, MTD</div>
+          <div class="metric-value num">43%</div>
+          <div class="metric-vs num">Budget 65% · LY 41%</div>
+        </div>
+        <div>
+          <div class="metric-label">ADR, MTD</div>
+          <div class="metric-value num">$1,664</div>
+          <div class="metric-vs num">Budget $1,816 · LY $1,875</div>
+        </div>
+        <div>
+          <div class="metric-label">Sales, MTD</div>
+          <div class="metric-value num">$76,508</div>
+          <div class="metric-vs num">Budget $135,690 · −43.6%</div>
+        </div>
+        <div>
+          <div class="metric-label">Sales, MTD vs LY (like-for-like)</div>
+          <div class="metric-value num flag-up">+8.0%</div>
+          <div class="metric-vs num">6 days vs 6 days, matched basis</div>
+        </div>
+      </div>
+      <div class="camp-note">Entire budget shortfall is a <b>budget-setting issue</b>, not a trading decline. On a true like-for-like basis CE is running ahead of last year on both occupancy and sales. Generator "crisis" flagged last cycle is confirmed a data error. Guest feedback: <b>excellent</b>, no complaints.</div>
+    </div>
+    <div class="camp">
+      <div class="camp-head">
+        <div class="camp-name wr"><span class="camp-swatch"></span>Warangi Ridge</div>
+        <div class="camp-tag tag-bad">Forward book still unexplained</div>
+      </div>
+      <div class="camp-grid">
+        <div>
+          <div class="metric-label">Occupancy, MTD</div>
+          <div class="metric-value num">9%</div>
+          <div class="metric-vs num">Budget 56%</div>
+        </div>
+        <div>
+          <div class="metric-label">ADR, MTD</div>
+          <div class="metric-value num">$1,857</div>
+          <div class="metric-vs num">Budget $1,827</div>
+        </div>
+        <div>
+          <div class="metric-label">Sales, MTD</div>
+          <div class="metric-value num">$15,423</div>
+          <div class="metric-vs num">Budget $98,988 · −84.4%</div>
+        </div>
+        <div>
+          <div class="metric-label">Sales, YTD vs LY</div>
+          <div class="metric-value num flag-up">+523%</div>
+          <div class="metric-vs num">off a very small base (post-opening ramp)</div>
+        </div>
+      </div>
+      <div class="camp-note">Cancellation report explains <b>roughly half</b> of the September pipeline decline: all benign, zero-deposit holds. It does <b>not</b> explain the camp manager's forecast of just 6.3% occupancy for the 10 days after Week 36: <b>the single most important open item this cycle.</b> Guest feedback: <b>positive</b>, no complaints.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Charts ===== -->
+<div class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">Figures 1–3</div>
+      <h2 class="section-title">Revenue, budget and forward trend</h2>
+    </div>
+  </div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">MTD Sales: Actual vs Budget vs Forecast</div>
+      <div class="chart-caption">Day 6, stacked by property</div>
+      <div class="chart-wrap"><canvas id="chartMtd"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">YTD Sales: Actual vs Budget vs LY</div>
+      <div class="chart-caption">Stacked by property</div>
+      <div class="chart-wrap"><canvas id="chartYtd"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Secondary Revenue by Department</div>
+      <div class="chart-caption">Week 36, CE vs WR</div>
+      <div class="chart-wrap"><canvas id="chartDept"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Pipeline table + resolved this cycle ===== -->
+<div class="section">
+  <div class="two-col">
+    <div>
+      <div class="section-head">
+        <div>
+          <div class="section-eyebrow">Section 12</div>
+          <h2 class="section-title">Forward pipeline, week on week</h2>
+        </div>
+      </div>
+      <table class="fin">
+        <thead>
+          <tr><th>Booking window</th><th>CE Wk35</th><th>CE Wk36</th><th>CE WoW</th><th>WR Wk35</th><th>WR Wk36</th><th>WR WoW</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>September</td><td class="num">$538,139</td><td class="num">$509,101</td><td class="num neg">−5.4%</td><td class="num">$108,999</td><td class="num">$97,958</td><td class="num neg">−10.1%</td></tr>
+          <tr><td>October</td><td class="num">$280,003</td><td class="num">$286,997</td><td class="num pos">+2.5%</td><td class="num">$92,896</td><td class="num">$84,640</td><td class="num neg">−8.9%</td></tr>
+          <tr><td>November</td><td class="num">$77,805</td><td class="num">$78,105</td><td class="num pos">+0.4%</td><td class="num">$98,879</td><td class="num">$99,179</td><td class="num pos">+0.3%</td></tr>
+          <tr><td class="grp-label">3-month total</td><td class="num grp-label">$895,947</td><td class="num grp-label">$874,203</td><td class="num neg">−2.4%</td><td class="num grp-label">$300,774</td><td class="num grp-label">$281,777</td><td class="num neg">−6.3%</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:12.5px;color:var(--text-lo);line-height:1.6;margin-top:16px;">Of CE's $29,038 September pipeline decline, only <b style="color:var(--text-hi)">28.7%</b> ($8,330) is confirmed cancellations: every one an unconfirmed, zero-deposit hold. The rest is normal run-off as booked nights were consumed. No further action needed on Craters Edge; Warangi Ridge's equivalent decline is only half-explained.</p>
+    </div>
+    <div>
+      <div class="section-head">
+        <div>
+          <div class="section-eyebrow">Since last report</div>
+          <h2 class="section-title">Resolved this cycle</h2>
+        </div>
+      </div>
+      <div class="resolved">
+        <div class="resolved-item">
+          <div class="resolved-check">✓</div>
+          <div class="resolved-text"><b>CE generator "2,700+ hrs overdue"</b>: confirmed data error. August Month-End Report shows both units freshly serviced, 200+ hrs in hand as of 31 Aug.</div>
+        </div>
+        <div class="resolved-item">
+          <div class="resolved-check">✓</div>
+          <div class="resolved-text"><b>CE year-on-year trading</b>: a true like-for-like comparison (6 vs 6 days) shows CE actually ahead of last year, not behind.</div>
+        </div>
+        <div class="resolved-item">
+          <div class="resolved-check">✓</div>
+          <div class="resolved-text"><b>CE pipeline decline</b>: diagnosed via cancellation report, ordinary booking-book mechanics, not softening demand.</div>
+        </div>
+        <div class="resolved-item">
+          <div class="resolved-check">✓</div>
+          <div class="resolved-text"><b>WR "Today" DSR formula error</b>: no longer appearing in this week's Daily Sales Report.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Red flags ===== -->
+<div class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">Section 14</div>
+      <h2 class="section-title">Owner attention required</h2>
+    </div>
+  </div>
+  <div class="flags">
+    <div class="flags-head">
+      <div></div><div>Issue</div><div>Impact</div><div>Responsible</div><div style="text-align:right">Target</div>
+    </div>
+    <div class="flag-row sev-critical">
+      <div class="flag-bar"></div>
+      <div class="flag-issue"><b>WR forward occupancy at 6.3%</b> for the 10 days after Week 36, cancellation report received doesn't cover this window</div>
+      <div class="flag-impact">Material near-term revenue risk on top of an 85% MTD shortfall</div>
+      <div class="flag-resp">Camp GM / Sales</div>
+      <div class="flag-date">Immediate</div>
+    </div>
+    <div class="flag-row sev-high">
+      <div class="flag-bar"></div>
+      <div class="flag-issue"><b>Both camps materially behind September budget</b>: CE −42%, WR −85% on run-rate</div>
+      <div class="flag-impact">Month-end result unlikely to meet budget</div>
+      <div class="flag-resp">GM / Finance</div>
+      <div class="flag-date">Mid-Sept review</div>
+    </div>
+    <div class="flag-row sev-high">
+      <div class="flag-bar"></div>
+      <div class="flag-issue"><b>YTD occupancy down 8–9 pts YoY</b> at both camps, against budgets that assumed higher occupancy</div>
+      <div class="flag-impact">Structural budget-assumption gap</div>
+      <div class="flag-resp">Finance / Ownership</div>
+      <div class="flag-date">Next budget review</div>
+    </div>
+    <div class="flag-row sev-watch">
+      <div class="flag-bar"></div>
+      <div class="flag-issue"><b>CE cash balance fell TZS 67.8m → 9.9m</b> across two snapshots (4–6 Sept)</div>
+      <div class="flag-impact">Reduced buffer against ongoing revenue shortfall</div>
+      <div class="flag-resp">Finance</div>
+      <div class="flag-date">Next report</div>
+    </div>
+    <div class="flag-row sev-watch">
+      <div class="flag-bar"></div>
+      <div class="flag-issue"><b>Creditors:</b> TZS 40.0m aged 31–60 days; TZS 3.67m aged over a year (New Arusha Hotel)</div>
+      <div class="flag-impact">Supplier relationship / late-payment risk</div>
+      <div class="flag-resp">Accounts</div>
+      <div class="flag-date">Next report</div>
+    </div>
+    <div class="flag-row sev-watch">
+      <div class="flag-bar"></div>
+      <div class="flag-issue"><b>Debtors concentration:</b> 41% of outstanding ($39,438) sits with one account, Direct Booking</div>
+      <div class="flag-impact">Cash-flow timing risk</div>
+      <div class="flag-resp">Accounts / Reservations</div>
+      <div class="flag-date">Next report</div>
+    </div>
+    <div class="flag-row sev-watch">
+      <div class="flag-bar"></div>
+      <div class="flag-issue"><b>Two WR vehicles unresolved 2+ weeks</b>; new fault on T524 ETG (shock absorber)</div>
+      <div class="flag-impact">Reduced vehicle availability</div>
+      <div class="flag-resp">Maintenance</div>
+      <div class="flag-date">Next report</div>
+    </div>
+    <div class="flag-row sev-watch">
+      <div class="flag-bar"></div>
+      <div class="flag-issue"><b>Identical fire-safety gaps</b> open at both camps: station, evacuation maps, signage</div>
+      <div class="flag-impact">Compliance / safety exposure</div>
+      <div class="flag-resp">HRM / H&amp;S lead</div>
+      <div class="flag-date">Next report</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-title">Data coverage</div>
+  This cycle incorporates: Weekly Operations Reports (WR Weeks 35 &amp; 36; CE Weeks 34 &amp; 36), the Daily Sales Report for 6 Sept 2026 and its 2025 prior-year equivalent, the Weekly Revenue/Pipeline Report, the Expected Receivable Report, the Creditors Ageing schedule, the Nationality/Foreigner Reports, both camps' Cancellation Reports, both camps' Action Plan trackers, staff attendance registers, and the Craters Edge August 2026 Month-End Report.
+  <br><br>
+  Still outstanding: a true Craters Edge Week 35 (22–30 Aug) weekly operations report, and a Warangi Ridge cancellation view covering the forward 9–18 September window. Payroll and a full P&amp;L for Craters Edge remain unavailable: the August Month-End Report's HR section was left blank.
+  <br><br>
+  Report compiled for the week of 1–8 September 2026. Percentage movements and projections are calculated as stated; where source data contained apparent errors or gaps, this is stated rather than estimated.
+</footer>
+
+<script>
+// ============================================================
+// 1. DATA: always runs first, no dependency on Chart.js.
+// ============================================================
+const CE = '#8AAE73';
+const WR = '#C7A15A';
+
+// WEEKLY HISTORY: the running dataset that grows each cycle.
+// Add one new object every week (see the Format Lock template).
+// Use null for any metric a camp's source documents didn't cover
+// that week: charts show a gap rather than a false zero.
+// Do not delete or edit past weeks' entries.
+const WEEKLY_HISTORY = [
+  {
+    week: 'Wk34', label: '15–21 Aug',
+    status: null, // no full Owner Report was compiled for this week
+    ce:  { occ: 49.6, secRev: 1203, fwd: null },
+    wr:  { occ: null, secRev: null, fwd: null }
+  },
+  {
+    week: 'Wk35', label: '22–30 Aug',
+    status: null, // no full Owner Report was compiled for this week
+    ce:  { occ: null, secRev: null, fwd: null },
+    wr:  { occ: 26.66, secRev: 110, fwd: 26.7 }
+  },
+  {
+    week: 'Wk36', label: '1–8 Sept',
+    status: 'amber', // first full Owner Report cycle: status history starts here
+    ce:  { occ: 37.9, secRev: 2010, fwd: 45.3 },
+    wr:  { occ: 26.66, secRev: 343, fwd: 6.33 }
+  }
+];
+
+// ============================================================
+// 2. DOM-ONLY RENDERING: runs regardless of whether Chart.js
+//    loaded, so a CDN hiccup never takes the whole page down.
+// ============================================================
+function renderStatusTimeline(history){
+  const el = document.getElementById('statusTimeline');
+  if (!el) return;
+  el.innerHTML = history.map(w => {
+    const cls = w.status ? w.status : '';
+    return `<div class="tl-item"><div class="tl-dot ${cls}" title="${w.week}: ${w.status || 'no report compiled'}"></div><div class="tl-label">${w.week}</div></div>`;
+  }).join('');
+}
+renderStatusTimeline(WEEKLY_HISTORY);
+
+function fmtUSD(v){ return '$' + Math.round(v).toLocaleString('en-US'); }
+function fmtUSDk(v){ return '$' + (v/1000).toLocaleString('en-US',{maximumFractionDigits:0}) + 'k'; }
+function fmtPct(v){ return v + '%'; }
+
+// ============================================================
+// 3. CHARTS: guarded, if Chart.js failed to load (CDN blocked,
+//    offline, ad-blocker), show a plain-text fallback per chart
+//    instead of a blank box or a page-breaking error.
+// ============================================================
+function chartsUnavailable(){
+  document.querySelectorAll('.chart-wrap').forEach(el => {
+    el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-faint);font-size:12px;text-align:center;padding:0 16px;">Chart library did not load: figures are in the tables/text on this page.</div>';
+  });
+}
+
+if (typeof Chart === 'undefined') {
+  chartsUnavailable();
+} else {
+  try {
+    Chart.defaults.font.family = "'IBM Plex Sans', sans-serif";
+    Chart.defaults.color = '#A9B3A3';
+    Chart.defaults.borderColor = 'rgba(241,236,223,0.10)';
+
+    const trendLabels = WEEKLY_HISTORY.map(w => w.week + '\n' + w.label);
+    const trendOptsBase = (yFmt) => ({
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index', intersect:false},
+      plugins:{
+        legend:{ position:'bottom', labels:{ boxWidth:9, boxHeight:9, usePointStyle:true, pointStyle:'circle', padding:14, font:{size:11} } },
+        tooltip:{ backgroundColor:'#1C2921', borderColor:'rgba(241,236,223,0.2)', borderWidth:1, titleColor:'#F3EFE4', bodyColor:'#F3EFE4', padding:10 }
+      },
+      scales:{
+        x:{ grid:{display:false}, ticks:{font:{size:11}} },
+        y:{ grid:{color:'rgba(241,236,223,0.08)'}, ticks:{font:{size:10}, callback:yFmt} }
+      }
+    });
+
+    new Chart(document.getElementById('trendOcc'), {
+      type:'line',
+      data:{ labels: trendLabels, datasets:[
+        { label:'Craters Edge', data:WEEKLY_HISTORY.map(w=>w.ce.occ), borderColor:CE, backgroundColor:CE, spanGaps:false, tension:0.3, pointRadius:4 },
+        { label:'Warangi Ridge', data:WEEKLY_HISTORY.map(w=>w.wr.occ), borderColor:WR, backgroundColor:WR, spanGaps:false, tension:0.3, pointRadius:4 }
+      ]},
+      options: trendOptsBase(fmtPct)
+    });
+
+    new Chart(document.getElementById('trendFwd'), {
+      type:'line',
+      data:{ labels: trendLabels, datasets:[
+        { label:'Craters Edge', data:WEEKLY_HISTORY.map(w=>w.ce.fwd), borderColor:CE, backgroundColor:CE, spanGaps:false, tension:0.3, pointRadius:4 },
+        { label:'Warangi Ridge', data:WEEKLY_HISTORY.map(w=>w.wr.fwd), borderColor:WR, backgroundColor:WR, spanGaps:false, tension:0.3, pointRadius:4 }
+      ]},
+      options: trendOptsBase(fmtPct)
+    });
+
+    new Chart(document.getElementById('trendSecRev'), {
+      type:'bar',
+      data:{ labels: trendLabels, datasets:[
+        { label:'Craters Edge', data:WEEKLY_HISTORY.map(w=>w.ce.secRev), backgroundColor:CE, borderRadius:2 },
+        { label:'Warangi Ridge', data:WEEKLY_HISTORY.map(w=>w.wr.secRev), backgroundColor:WR, borderRadius:2 }
+      ]},
+      options: trendOptsBase(fmtUSD)
+    });
+
+    const commonOpts = (yFmt) => ({
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index', intersect:false},
+      plugins:{
+        legend:{ position:'bottom', labels:{ boxWidth:9, boxHeight:9, usePointStyle:true, pointStyle:'circle', padding:14, font:{size:11} } },
+        tooltip:{
+          backgroundColor:'#1C2921', borderColor:'rgba(241,236,223,0.2)', borderWidth:1,
+          titleColor:'#F3EFE4', bodyColor:'#F3EFE4', padding:10, titleFont:{size:12,weight:'600'}, bodyFont:{size:12},
+          callbacks:{ label: (ctx)=> ` ${ctx.dataset.label}: ${yFmt(ctx.parsed.y)}` }
+        }
+      },
+      scales:{
+        x:{ stacked:true, grid:{display:false}, ticks:{font:{size:11}} },
+        y:{ stacked:true, grid:{color:'rgba(241,236,223,0.08)'}, ticks:{ font:{size:10}, callback:(v)=>yFmt(v) } }
+      }
+    });
+
+    new Chart(document.getElementById('chartMtd'), {
+      type:'bar',
+      data:{ labels:['MTD Actual','MTD Budget','Month-End\nForecast'], datasets:[
+        { label:'Craters Edge', data:[76508,135690,382540], backgroundColor:CE, borderRadius:2 },
+        { label:'Warangi Ridge', data:[15423,98988,77115], backgroundColor:WR, borderRadius:2 }
+      ]},
+      options: commonOpts(fmtUSD)
+    });
+
+    new Chart(document.getElementById('chartYtd'), {
+      type:'bar',
+      data:{ labels:['YTD Actual\n2026','YTD Budget\n2026','YTD Actual\n2025 (LY)'], datasets:[
+        { label:'Craters Edge', data:[1931876,3751344,1936175], backgroundColor:CE, borderRadius:2 },
+        { label:'Warangi Ridge', data:[429611,2179045,68928], backgroundColor:WR, borderRadius:2 }
+      ]},
+      options: commonOpts(fmtUSDk)
+    });
+
+    new Chart(document.getElementById('chartDept'), {
+      type:'bar',
+      data:{ labels:['Craters Edge','Warangi Ridge'], datasets:[
+        { label:'Bar', data:[10,168], backgroundColor:'#7FA36B', borderRadius:2 },
+        { label:'Shop', data:[230,0], backgroundColor:'#C7A15A', borderRadius:2 },
+        { label:'Activity', data:[230,0], backgroundColor:'#B0855C', borderRadius:2 },
+        { label:'Meals', data:[100,0], backgroundColor:'#C7623F', borderRadius:2 },
+        { label:'Spa', data:[1440,175], backgroundColor:'#8C7EA6', borderRadius:2 }
+      ]},
+      options: commonOpts(fmtUSD)
+    });
+  } catch (e) {
+    console.error('Dashboard chart rendering failed:', e);
+    chartsUnavailable();
+  }
+}
+</script>
+
+</body>
+</html>
