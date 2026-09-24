@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Wilderness Collection: Owner Dashboard, Week 36</title>
+<title>Wilderness Collection: Owner Dashboard, Week 38</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
@@ -75,6 +75,8 @@
     letter-spacing:.06em; text-transform:uppercase;
   }
   .status-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);}
+  .status-pill.red{ border-color:var(--rust); color:var(--rust); }
+  .status-pill.red .dot{ background:var(--rust); }
   .status-note{ color:var(--text-faint); font-size:12.5px; margin-top:8px; max-width:220px; }
   .coverage{ color:var(--text-faint); font-size:12.5px; margin-top:16px; }
 
@@ -192,6 +194,16 @@
   footer{ max-width:1180px; margin:0 auto; padding:30px 32px 46px; color:var(--text-faint); font-size:12px; line-height:1.7;}
   footer .foot-title{ color:var(--text-lo); font-weight:600; margin-bottom:6px; }
 
+  /* ===== leave list / small tables (added Week 37) ===== */
+  .scroll-x{ overflow-x:auto; }
+  table.fin td.l, table.fin th.l{ text-align:left; }
+  .pill-mini{ display:inline-block; font-size:10.5px; padding:2px 8px; border-radius:100px; font-weight:600; letter-spacing:.03em; }
+  .pm-al{ background:rgba(199,161,90,0.16); color:var(--brass-hi); }
+  .pm-s{ background:var(--rust-dim); color:var(--rust); }
+  .pm-ml{ background:rgba(138,174,115,0.14); color:var(--moss); }
+  .note-sm{ font-size:12.5px; color:var(--text-lo); line-height:1.6; margin-top:16px; }
+  .note-sm b{ color:var(--text-hi); }
+
   @media (max-width:860px){
     .ledger{grid-template-columns:repeat(2,1fr);}
     .ledger-item:nth-child(2n){border-right:none;}
@@ -212,42 +224,42 @@
   <div class="masthead-top">
     <div>
       <div class="brandline"><span class="dot"></span>Wilderness Collection · Owner Dashboard</div>
-      <h1 class="title">Week 36 performance, at a glance</h1>
-      <div class="subtitle">Craters Edge &amp; Warangi Ridge · 1–8 September 2026 · prepared by the Operations Manager for the Owner</div>
+      <h1 class="title">Week 38 performance, at a glance</h1>
+      <div class="subtitle">Craters Edge &amp; Warangi Ridge · Week 38, 15–21 September 2026 · prepared by the Operations Manager for the Owner</div>
     </div>
     <div class="status-block">
-      <span class="status-pill"><span class="dot"></span>Amber, downgraded from red</span>
-      <div class="status-note">Two of last cycle's most severe findings have been resolved this week. See "Resolved this cycle" below.</div>
+      <span class="status-pill red"><span class="dot"></span>Red, from amber</span>
+      <div class="status-note">Last week's trigger was met: no WR recovery plan received, and overdraft headroom touched $50,113 on 17 Sept. CE amber, WR red. Returns to amber once the WR plan is in place and a weekly cash flow keeps headroom clear of $50k.</div>
     </div>
   </div>
-  <div class="coverage">Financial position refreshed to Day 6 (6 Sept 2026) Daily Sales Report · baseline week: Week 35, 22–30 Aug</div>
+  <div class="coverage">Financial position refreshed to Day 17 (17 Sept 2026) Daily Sales Report · baseline week: Week 37, 8–14 Sept</div>
 </div>
 
 <div class="ledger">
   <div class="ledger-item">
     <div class="ledger-label">Combined MTD sales</div>
-    <div class="ledger-value num">$91,931</div>
-    <div class="ledger-sub flag-down num">vs $234,678 budget · −60.8%</div>
+    <div class="ledger-value num">$240,867</div>
+    <div class="ledger-sub flag-down num">vs $664,921 budget · −63.8%</div>
   </div>
   <div class="ledger-item">
     <div class="ledger-label">Combined YTD sales</div>
-    <div class="ledger-value num">$2.36M</div>
-    <div class="ledger-sub flag-down num">vs $5.93M budget · −60.2%</div>
+    <div class="ledger-value num">$2.51M</div>
+    <div class="ledger-sub flag-down num">vs $6.36M budget · −60.5%</div>
   </div>
   <div class="ledger-item">
-    <div class="ledger-label">CE cash on hand</div>
-    <div class="ledger-value num">TZS 9.9M</div>
-    <div class="ledger-sub flag-down num">from TZS 67.8M · 4→6 Sept</div>
+    <div class="ledger-label">Overdraft drawn, 17 Sept close</div>
+    <div class="ledger-value num">$497k</div>
+    <div class="ledger-sub flag-down num">headroom $103k · was $50k at opening</div>
   </div>
   <div class="ledger-item">
-    <div class="ledger-label">CE forward booking</div>
-    <div class="ledger-value num">45.3%</div>
-    <div class="ledger-sub flag-up num">next 10 days · up from 37.9%</div>
+    <div class="ledger-label">CE occupancy, week</div>
+    <div class="ledger-value num">35.0%</div>
+    <div class="ledger-sub flag-up num">as forecast · next 7 days 43.5%</div>
   </div>
   <div class="ledger-item">
-    <div class="ledger-label">WR forward booking</div>
-    <div class="ledger-value num">6.3%</div>
-    <div class="ledger-sub flag-down num">next 10 days · down from 26.7%</div>
+    <div class="ledger-label">WR bed-nights, week</div>
+    <div class="ledger-value num">22</div>
+    <div class="ledger-sub flag-up num">from 4 · 11 guests in on 20 Sept</div>
   </div>
 </div>
 
@@ -263,12 +275,12 @@
   <div class="chart-grid">
     <div class="chart-card">
       <div class="chart-title">Occupancy % by week</div>
-      <div class="chart-caption">Craters Edge vs Warangi Ridge</div>
+      <div class="chart-caption">As reported in each camp's weekly report</div>
       <div class="chart-wrap"><canvas id="trendOcc"></canvas></div>
     </div>
     <div class="chart-card">
-      <div class="chart-title">Forward booking signal, next 10 days</div>
-      <div class="chart-caption">As reported at each week's cycle</div>
+      <div class="chart-title">Forward booking signal</div>
+      <div class="chart-caption">As reported at each cycle (CE 7-day basis, WR 10-day)</div>
       <div class="chart-wrap"><canvas id="trendFwd"></canvas></div>
     </div>
     <div class="chart-card">
@@ -277,7 +289,7 @@
       <div class="chart-wrap"><canvas id="trendSecRev"></canvas></div>
     </div>
   </div>
-  <p class="trend-note">Craters Edge's Week 35 operations report and Warangi Ridge's Week 34 report were never supplied, so those points show as gaps rather than estimates. Week 36 is the first cycle with a full Owner Report compiled, so the status timeline above begins there: earlier weeks show operational figures only, with no formal status assessment attached.</p>
+  <p class="trend-note">Craters Edge's Week 35 operations report and Warangi Ridge's Week 34 report were never supplied, so those points show as gaps rather than estimates. Warangi Ridge's percentages are plotted as reported; they match peak rooms occupied over 15 rooms (6 of 15 = 40.0% in Week 38), not weekly occupancy. On a bed-night basis Warangi Ridge was about 11.2% in Week 38 (22 of 196 bed-nights) and 2.0% in Week 37. Craters Edge's forecast has matched the following week's result exactly for two weeks running. Craters Edge secondary revenue has now fallen for two consecutive weeks.</p>
 </div>
 
 <!-- ===== Camps comparison ===== -->
@@ -285,67 +297,67 @@
   <div class="section-head">
     <div>
       <div class="section-eyebrow">Property comparison</div>
-      <h2 class="section-title">Two camps, two very different stories</h2>
+      <h2 class="section-title">A forecast soft week at one camp, first guests in weeks at the other</h2>
     </div>
   </div>
   <div class="camps">
     <div class="camp">
       <div class="camp-head">
         <div class="camp-name ce"><span class="camp-swatch"></span>Craters Edge</div>
-        <div class="camp-tag tag-good">Trading ahead of last year</div>
+        <div class="camp-tag tag-good">Soft week, as forecast</div>
       </div>
       <div class="camp-grid">
         <div>
           <div class="metric-label">Occupancy, MTD</div>
-          <div class="metric-value num">43%</div>
-          <div class="metric-vs num">Budget 65% · LY 41%</div>
+          <div class="metric-value num">47%</div>
+          <div class="metric-vs num">Budget 65% · Day 13 was 47%</div>
         </div>
         <div>
           <div class="metric-label">ADR, MTD</div>
-          <div class="metric-value num">$1,664</div>
-          <div class="metric-vs num">Budget $1,816 · LY $1,875</div>
+          <div class="metric-value num">$1,596</div>
+          <div class="metric-vs num">Budget $1,816 · Day 13 was $1,597</div>
         </div>
         <div>
           <div class="metric-label">Sales, MTD</div>
-          <div class="metric-value num">$76,508</div>
-          <div class="metric-vs num">Budget $135,690 · −43.6%</div>
+          <div class="metric-value num">$222,113</div>
+          <div class="metric-vs num">Budget $384,455 · −42.2%</div>
         </div>
         <div>
-          <div class="metric-label">Sales, MTD vs LY (like-for-like)</div>
-          <div class="metric-value num flag-up">+8.0%</div>
-          <div class="metric-vs num">6 days vs 6 days, matched basis</div>
+          <div class="metric-label">Sales vs last year, 1–13 Sept</div>
+          <div class="metric-value num flag-up">+30.5%</div>
+          <div class="metric-vs num">+15.1% per available room · YTD +1.5%</div>
         </div>
       </div>
-      <div class="camp-note">Entire budget shortfall is a <b>budget-setting issue</b>, not a trading decline. On a true like-for-like basis CE is running ahead of last year on both occupancy and sales. Generator "crisis" flagged last cycle is confirmed a data error. Guest feedback: <b>excellent</b>, no complaints.</div>
+      <div class="camp-note">Bed-nights fell <b>22.2%</b> to 98, exactly as forecast; next 7 days <b>43.5%</b>. Secondary revenue fell for a second week to <b>$660</b> (−63.0%). Diesel per bed-night up <b>33.2%</b> and only <b>700 L</b> in storage, less than a week's use. Action plan records water supply line works and overflowing septic tanks. Guest feedback: <b>excellent</b>, no complaints.</div>
     </div>
     <div class="camp">
       <div class="camp-head">
         <div class="camp-name wr"><span class="camp-swatch"></span>Warangi Ridge</div>
-        <div class="camp-tag tag-bad">Forward book still unexplained</div>
+        <div class="camp-tag tag-bad">Guests arrived, revenue not yet</div>
       </div>
       <div class="camp-grid">
         <div>
           <div class="metric-label">Occupancy, MTD</div>
-          <div class="metric-value num">9%</div>
-          <div class="metric-vs num">Budget 56%</div>
+          <div class="metric-value num">4%</div>
+          <div class="metric-vs num">Budget 56% · Day 13 was 5%</div>
         </div>
         <div>
-          <div class="metric-label">ADR, MTD</div>
-          <div class="metric-value num">$1,857</div>
-          <div class="metric-vs num">Budget $1,827</div>
+          <div class="metric-label">Guest bed-nights, week</div>
+          <div class="metric-value num flag-up">22</div>
+          <div class="metric-vs num">Week 37: 4 · 11 guests forecast, 11 arrived</div>
         </div>
         <div>
           <div class="metric-label">Sales, MTD</div>
-          <div class="metric-value num">$15,423</div>
-          <div class="metric-vs num">Budget $98,988 · −84.4%</div>
+          <div class="metric-value num">$18,754</div>
+          <div class="metric-vs num">Budget $280,466 · −93.3%</div>
         </div>
         <div>
-          <div class="metric-label">Sales, YTD vs LY</div>
-          <div class="metric-value num flag-up">+523%</div>
-          <div class="metric-vs num">off a very small base (post-opening ramp)</div>
+          <div class="metric-label">Confirmed 2026 bookings</div>
+          <div class="metric-value num flag-down">−$46,176</div>
+          <div class="metric-vs num">$926,912 to $880,736 in 4 days · −5.0%</div>
         </div>
       </div>
-      <div class="camp-note">Cancellation report explains <b>roughly half</b> of the September pipeline decline: all benign, zero-deposit holds. It does <b>not</b> explain the camp manager's forecast of just 6.3% occupancy for the 10 days after Week 36: <b>the single most important open item this cycle.</b> Guest feedback: <b>positive</b>, no complaints.</div>
+      <div class="camp-note">Sold <b>$0</b> in days 14–17 against a $65,992 budget; the 20 Sept arrivals fall after the DSR date. Secondary revenue <b>$0</b>. Present staff-days rose 11.8% to 256 with guests in house on 2 of 7 days. <b>No recovery plan</b> or deposit rule received. Guest feedback: <b>positive</b>, no complaints.</div>
     </div>
   </div>
 </div>
@@ -361,17 +373,17 @@
   <div class="chart-grid">
     <div class="chart-card">
       <div class="chart-title">MTD Sales: Actual vs Budget vs Forecast</div>
-      <div class="chart-caption">Day 6, stacked by property</div>
+      <div class="chart-caption">Day 17, stacked by property · forecast is run-rate</div>
       <div class="chart-wrap"><canvas id="chartMtd"></canvas></div>
     </div>
     <div class="chart-card">
       <div class="chart-title">YTD Sales: Actual vs Budget vs LY</div>
-      <div class="chart-caption">Stacked by property</div>
+      <div class="chart-caption">Stacked by property · LY matched at 13 Sept from the 2025 DSR (CE excl. permit income; WR 2025 was its opening period)</div>
       <div class="chart-wrap"><canvas id="chartYtd"></canvas></div>
     </div>
     <div class="chart-card">
       <div class="chart-title">Secondary Revenue by Department</div>
-      <div class="chart-caption">Week 36, CE vs WR</div>
+      <div class="chart-caption">Week 38, CE vs WR</div>
       <div class="chart-wrap"><canvas id="chartDept"></canvas></div>
     </div>
   </div>
@@ -384,21 +396,23 @@
       <div class="section-head">
         <div>
           <div class="section-eyebrow">Section 12</div>
-          <h2 class="section-title">Forward pipeline, week on week</h2>
+          <h2 class="section-title">Forward bookings, week on week</h2>
         </div>
       </div>
+      <div class="scroll-x">
       <table class="fin">
         <thead>
-          <tr><th>Booking window</th><th>CE Wk35</th><th>CE Wk36</th><th>CE WoW</th><th>WR Wk35</th><th>WR Wk36</th><th>WR WoW</th></tr>
+          <tr><th>Confirmed incl. VAT (DSR)</th><th>13 Sept</th><th>17 Sept</th><th>Movement</th><th>%</th></tr>
         </thead>
         <tbody>
-          <tr><td>September</td><td class="num">$538,139</td><td class="num">$509,101</td><td class="num neg">−5.4%</td><td class="num">$108,999</td><td class="num">$97,958</td><td class="num neg">−10.1%</td></tr>
-          <tr><td>October</td><td class="num">$280,003</td><td class="num">$286,997</td><td class="num pos">+2.5%</td><td class="num">$92,896</td><td class="num">$84,640</td><td class="num neg">−8.9%</td></tr>
-          <tr><td>November</td><td class="num">$77,805</td><td class="num">$78,105</td><td class="num pos">+0.4%</td><td class="num">$98,879</td><td class="num">$99,179</td><td class="num pos">+0.3%</td></tr>
-          <tr><td class="grp-label">3-month total</td><td class="num grp-label">$895,947</td><td class="num grp-label">$874,203</td><td class="num neg">−2.4%</td><td class="num grp-label">$300,774</td><td class="num grp-label">$281,777</td><td class="num neg">−6.3%</td></tr>
+          <tr><td>Craters Edge, 2026</td><td class="num">$3,335,275</td><td class="num">$3,334,425</td><td class="num">−$850</td><td class="num">0.0%</td></tr>
+          <tr><td>Craters Edge, 2027</td><td class="num">$1,312,307</td><td class="num">$1,312,307</td><td class="num">$0</td><td class="num">0.0%</td></tr>
+          <tr><td>Warangi Ridge, 2026</td><td class="num">$926,912</td><td class="num">$880,736</td><td class="num neg">−$46,176</td><td class="num neg">−5.0%</td></tr>
+          <tr><td>Warangi Ridge, 2027</td><td class="num">$203,702</td><td class="num">$203,702</td><td class="num">$0</td><td class="num">0.0%</td></tr>
         </tbody>
       </table>
-      <p style="font-size:12.5px;color:var(--text-lo);line-height:1.6;margin-top:16px;">Of CE's $29,038 September pipeline decline, only <b style="color:var(--text-hi)">28.7%</b> ($8,330) is confirmed cancellations: every one an unconfirmed, zero-deposit hold. The rest is normal run-off as booked nights were consumed. No further action needed on Craters Edge; Warangi Ridge's equivalent decline is only half-explained.</p>
+      </div>
+      <p class="note-sm">The Weekly Revenue/Pipeline Report was <b>not received</b> this cycle, so the September–November booking-window table cannot be updated (Week 37 3-month totals: CE $893,214, WR $288,651). Warangi Ridge's fall is in <b>confirmed</b> business, unlike the zero-deposit holds that lapsed earlier; reason requires management confirmation.</p>
     </div>
     <div>
       <div class="section-head">
@@ -410,21 +424,127 @@
       <div class="resolved">
         <div class="resolved-item">
           <div class="resolved-check">✓</div>
-          <div class="resolved-text"><b>CE generator "2,700+ hrs overdue"</b>: confirmed data error. August Month-End Report shows both units freshly serviced, 200+ hrs in hand as of 31 Aug.</div>
+          <div class="resolved-text"><b>Debtors concentration</b>: the $39,438 Direct Booking balance was collected; outstanding debtors fell 70.7% to $22,345 and collections rose for a second period ($104,268).</div>
         </div>
         <div class="resolved-item">
           <div class="resolved-check">✓</div>
-          <div class="resolved-text"><b>CE year-on-year trading</b>: a true like-for-like comparison (6 vs 6 days) shows CE actually ahead of last year, not behind.</div>
+          <div class="resolved-text"><b>WR forecast question</b>: 11 guests forecast for the week, 11 checked in on 20 Sept.</div>
         </div>
         <div class="resolved-item">
           <div class="resolved-check">✓</div>
-          <div class="resolved-text"><b>CE pipeline decline</b>: diagnosed via cancellation report, ordinary booking-book mechanics, not softening demand.</div>
+          <div class="resolved-text"><b>WR vehicles</b>: T252 BUR back from Arusha and T461 EMC running again; open items down from 5 of 6 vehicles to 4 of 6.</div>
         </div>
         <div class="resolved-item">
           <div class="resolved-check">✓</div>
-          <div class="resolved-text"><b>WR "Today" DSR formula error</b>: no longer appearing in this week's Daily Sales Report.</div>
+          <div class="resolved-text"><b>CE reception roof lining</b>: no longer listed in the weekly report, which now agrees with the action plan.</div>
+        </div>
+        <div class="resolved-item">
+          <div class="resolved-check">✓</div>
+          <div class="resolved-text"><b>CE cancellation report</b>: received after three cycles of requests (38 reservations, arrivals 14–20 Sept).</div>
+        </div>
+        <div class="resolved-item">
+          <div class="resolved-check">✓</div>
+          <div class="resolved-text"><b>Year-on-year comparison</b>: 2025 DSRs received. At 13 Sept CE was +30.5% vs 2025 in September and +1.5% YTD; the budget assumed 2.2× last year.</div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Action plans: completed this week (standard from Week 37) ===== -->
+<div class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">Section 15.1 · Action Plans · standard from Week 37</div>
+      <h2 class="section-title">Completed in Week 38 (15–21 Sept)</h2>
+    </div>
+    <div class="section-eyebrow">10 items · CE 3 · WR 7</div>
+  </div>
+  <div class="scroll-x">
+  <table class="fin">
+    <thead><tr><th>Camp</th><th class="l">Action</th><th class="l">Area</th><th>Completed</th><th class="l">&nbsp;&nbsp;Commentary</th></tr></thead>
+    <tbody>
+          <tr><td>CE</td><td class="l">Relief store keeper, both camps</td><td class="l">Stores</td><td class="num">18 Sept</td><td class="l">&nbsp;&nbsp;<b>Follow-up:</b> employed; NCAA/TANAPA permits awaited</td></tr>
+          <tr><td>CE</td><td class="l">Tablecloths</td><td class="l">Linen &amp; tableware</td><td class="num">16 Sept</td><td class="l">&nbsp;&nbsp;Found in storeroom, no purchase needed</td></tr>
+          <tr><td>CE</td><td class="l">Five extra fans</td><td class="l">Staff housing</td><td class="num">16 Sept</td><td class="l">&nbsp;&nbsp;<b>Follow-up:</b> weekly report still lists guide-room fans as needed</td></tr>
+          <tr><td>WR</td><td class="l">Laundry iron roller repair</td><td class="l">Laundry</td><td class="num">20 Sept</td><td class="l">&nbsp;&nbsp;Working; notes still say washing machine not received</td></tr>
+          <tr><td>WR</td><td class="l">T461 EMC parts order</td><td class="l">Vehicles</td><td class="num">15 Sept</td><td class="l">&nbsp;&nbsp;<b>Follow-up:</b> windscreen not fitted, oil service due</td></tr>
+          <tr><td>WR</td><td class="l">T252 BUR repairs in Arusha</td><td class="l">Vehicles</td><td class="num">16 Sept</td><td class="l">&nbsp;&nbsp;Back at camp, drives well</td></tr>
+          <tr><td>WR</td><td class="l">Electrical materials order</td><td class="l">Building works</td><td class="num">15 Sept</td><td class="l">&nbsp;&nbsp;Received on site</td></tr>
+          <tr><td>WR</td><td class="l">Camp/vehicle radio call</td><td class="l">Vehicles</td><td class="num">18 Sept</td><td class="l">&nbsp;&nbsp;Installed on T524 ETG</td></tr>
+          <tr><td>WR</td><td class="l">Labels for detox juice</td><td class="l">Main kitchen</td><td class="num">20 Sept</td><td class="l">&nbsp;&nbsp;Handed to WR team</td></tr>
+          <tr><td>WR</td><td class="l">New windscreen for T223 EHS</td><td class="l">Vehicles</td><td class="num">18 Sept</td><td class="l">&nbsp;&nbsp;<b>Follow-up:</b> Mahindra screen still to be fitted</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note-sm">Only items marked "Complete" in the Action Plan workbooks with a completion date inside 15–21 September are shown. Three items marked complete without an in-week date are excluded (CE vehicle parking with car wash, WR pool chemicals, WR bolts and nuts). Open items that need attention are in the operational focus points below.</p>
+</div>
+
+<!-- ===== Cancellations & no-shows (standard from Week 37) ===== -->
+<div class="section">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">Section 12.3 · standard from Week 37</div>
+      <h2 class="section-title">Cancellations and no-shows</h2>
+    </div>
+  </div>
+  <div class="scroll-x">
+  <table class="fin">
+    <thead>
+      <tr><th>Camp</th><th class="l">Arrival window</th><th>Reservations</th><th>No-shows</th><th>Cancelled</th><th>Value</th><th class="l">&nbsp;&nbsp;Main reason</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>CE</td><td class="l">14 Sept (Week 37 date)</td><td class="num">5</td><td class="num">0</td><td class="num">5</td><td class="num">$9,034</td><td class="l">&nbsp;&nbsp;Non-guaranteed hold, $0 deposit (5 of 5)</td></tr>
+      <tr><td>CE</td><td class="l">15–20 Sept</td><td class="num">33</td><td class="num">1</td><td class="num">32</td><td class="num">$59,653</td><td class="l">&nbsp;&nbsp;Non-guaranteed 31, "No Details" 1, no-show 1; all $0 deposit</td></tr>
+      <tr><td>WR</td><td class="l">14–20 Sept</td><td class="num">4</td><td class="num">0</td><td class="num">4</td><td class="num">$13,510</td><td class="l">&nbsp;&nbsp;Same report as Week 37; nothing new</td></tr>
+      <tr><td class="grp-label">Both</td><td class="l grp-label">Cumulative on file</td><td class="num grp-label">51</td><td class="num grp-label">1</td><td class="num grp-label">50</td><td class="num neg">$112,664</td><td class="l">&nbsp;&nbsp;WR 13 ($43,978), CE 38 ($68,687); none with a deposit</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note-sm">Only two Craters Edge losses happened in Week 38 itself: a <b>2-room no-show</b> (Unique Safaris, $3,920, no deposit) and one arrival-day cancellation (A&amp;K, $1,960). The other 36 were released weeks or months earlier; 17 share the date 29 April 2026. Cheli &amp; Peacock (9 holds, $18,442) and Ranger Safari (5, $11,471) now appear at both camps. The WR report does not explain the −$46,176 fall in confirmed bookings. Value is room-rate lines, not money lost.</p>
+</div>
+
+<!-- ===== People on leave (standard from Week 37) ===== -->
+<div class="section">
+  <div class="two-col">
+    <div>
+      <div class="section-head">
+        <div>
+          <div class="section-eyebrow">Section 11.2 · standard from Week 37</div>
+          <h2 class="section-title">Staff on leave, Week 38 (15–21 Sept)</h2>
+        </div>
+      </div>
+      <div class="scroll-x">
+      <table class="fin">
+        <thead><tr><th>Camp</th><th class="l">Name</th><th class="l">Role</th><th class="l">Leave</th><th>Days</th><th>Dates</th></tr></thead>
+        <tbody>
+          <tr><td>CE</td><td class="l">Sarah Exaud Nassari</td><td class="l">Housekeeping</td><td class="l"><span class="pill-mini pm-ml">Maternity</span></td><td class="num">7</td><td class="num">15–21</td></tr>
+          <tr><td>CE</td><td class="l">Yultiansian Gandu</td><td class="l">Masseuse</td><td class="l"><span class="pill-mini pm-al">Annual</span></td><td class="num">7</td><td class="num">15–21</td></tr>
+          <tr><td>WR</td><td class="l">Praygod Thomas Mosha</td><td class="l">Maintenance</td><td class="l"><span class="pill-mini pm-al">Annual</span></td><td class="num">7</td><td class="num">15–21</td></tr>
+          <tr><td>WR</td><td class="l">Charles Francis Nandi</td><td class="l">Asst Camp Manager</td><td class="l"><span class="pill-mini pm-al">Annual</span></td><td class="num">3</td><td class="num">19–21</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="note-sm">No sick leave at either camp this week. Suzana Kiharata (CE), sick to 13 Sept, is rostered off to 29 Sept. Charles Francis Nandi is on annual leave to 30 Sept and has not been present in September. CE's Assistant Manager Victor Kimambo and Head Chef Leonard Chogo are rostered off for the rest of the month. The two CE scullery interns have no entries from 15 Sept.</p>
+    </div>
+    <div>
+      <div class="section-head">
+        <div>
+          <div class="section-eyebrow">Section 11.1</div>
+          <h2 class="section-title">Attendance vs demand</h2>
+        </div>
+      </div>
+      <table class="fin">
+        <thead><tr><th>Person-days</th><th>CE Wk37</th><th>CE Wk38</th><th>WR Wk37</th><th>WR Wk38</th></tr></thead>
+        <tbody>
+          <tr><td>Present</td><td class="num">236</td><td class="num">233</td><td class="num">229</td><td class="num neg">256</td></tr>
+          <tr><td>Days off</td><td class="num">56</td><td class="num">61</td><td class="num">91</td><td class="num">74</td></tr>
+          <tr><td>Leave, all types</td><td class="num">28</td><td class="num">14</td><td class="num">13</td><td class="num">10</td></tr>
+          <tr><td>Guest bed-nights</td><td class="num">126</td><td class="num">98</td><td class="num">4</td><td class="num">22</td></tr>
+          <tr><td class="grp-label">Present days per bed-night</td><td class="num">1.9</td><td class="num">2.4</td><td class="num">57.3</td><td class="num pos">11.6</td></tr>
+        </tbody>
+      </table>
+      <p class="note-sm">Warangi Ridge's ratio improved because guests arrived, but present days rose 11.8% in a week with guests on only 2 of 7 days. Head Office attendance and payroll cost were not received (third cycle for payroll).</p>
     </div>
   </div>
 </div>
@@ -434,7 +554,7 @@
   <div class="section-head">
     <div>
       <div class="section-eyebrow">Section 14</div>
-      <h2 class="section-title">Owner attention required</h2>
+      <h2 class="section-title">Operational focus points</h2>
     </div>
   </div>
   <div class="flags">
@@ -443,70 +563,103 @@
     </div>
     <div class="flag-row sev-critical">
       <div class="flag-bar"></div>
-      <div class="flag-issue"><b>WR forward occupancy at 6.3%</b> for the 10 days after Week 36, cancellation report received doesn't cover this window</div>
-      <div class="flag-impact">Material near-term revenue risk on top of an 85% MTD shortfall</div>
+      <div class="flag-issue"><b>WR revenue still near zero</b>: $0 sold in days 14–17 vs $65,992 budget; MTD −93.3%, worse at three consecutive DSRs; no recovery plan or deposit rule received</div>
+      <div class="flag-impact">Run-rate $33,095 vs $494,940 budget; October holds ($19,040) unprotected</div>
       <div class="flag-resp">Camp GM / Sales</div>
+      <div class="flag-date">Overdue</div>
+    </div>
+    <div class="flag-row sev-critical">
+      <div class="flag-bar"></div>
+      <div class="flag-issue"><b>Overdraft headroom touched $50,113</b> at the start of 17 Sept (drawn $549,887) before $52,792 of receipts; closed at $102,905. BOB facility 91.7% drawn; TZS 128.1M paid out in one day</div>
+      <div class="flag-impact">Last week's $50k threshold reached intra-week</div>
+      <div class="flag-resp">Finance</div>
+      <div class="flag-date">Next report</div>
+    </div>
+    <div class="flag-row sev-high">
+      <div class="flag-bar"></div>
+      <div class="flag-issue"><b>WR confirmed 2026 bookings down $46,176</b> (−5.0%) in four days; WR cancellation report has nothing new; no pipeline report</div>
+      <div class="flag-impact">Loss of confirmed, not provisional, business if cancellations</div>
+      <div class="flag-resp">Reservations / Finance</div>
+      <div class="flag-date">Next report</div>
+    </div>
+    <div class="flag-row sev-high">
+      <div class="flag-bar"></div>
+      <div class="flag-issue"><b>CE holds with no deposit</b>: all 38 reservations lost for 14–20 Sept arrivals ($68,687); one 2-room no-show uncharged unless confirmed</div>
+      <div class="flag-impact">Deposit gap applies to both camps</div>
+      <div class="flag-resp">Reservations / Sales</div>
+      <div class="flag-date">Next report</div>
+    </div>
+    <div class="flag-row sev-high">
+      <div class="flag-bar"></div>
+      <div class="flag-issue"><b>CE diesel</b>: 8.2 L per bed-night (+33.2%); 700 L in storage, less than one week's use; none bought for two weeks</div>
+      <div class="flag-impact">Risk of power loss if delivery slips</div>
+      <div class="flag-resp">Camp Manager / Purchasing</div>
       <div class="flag-date">Immediate</div>
     </div>
     <div class="flag-row sev-high">
       <div class="flag-bar"></div>
-      <div class="flag-issue"><b>Both camps materially behind September budget</b>: CE −42%, WR −85% on run-rate</div>
-      <div class="flag-impact">Month-end result unlikely to meet budget</div>
-      <div class="flag-resp">GM / Finance</div>
-      <div class="flag-date">Mid-Sept review</div>
+      <div class="flag-issue"><b>WR cost base not matched to demand</b>: present days up 11.8% to 256 with guests on 2 of 7 days; payroll not supplied (third cycle)</div>
+      <div class="flag-impact">Payroll and fixed costs running ahead of revenue</div>
+      <div class="flag-resp">Camp GM / HRM / Finance</div>
+      <div class="flag-date">Next report</div>
     </div>
     <div class="flag-row sev-high">
       <div class="flag-bar"></div>
-      <div class="flag-issue"><b>YTD occupancy down 8–9 pts YoY</b> at both camps, against budgets that assumed higher occupancy</div>
-      <div class="flag-impact">Structural budget-assumption gap</div>
+      <div class="flag-issue"><b>Both camps materially behind September budget</b>: CE −42.2%, WR −93.3%; combined run-rate $425,059 vs $1,173,390; re-forecast not received</div>
+      <div class="flag-impact">Month-end result will not meet budget</div>
+      <div class="flag-resp">GM / Finance</div>
+      <div class="flag-date">Overdue</div>
+    </div>
+    <div class="flag-row sev-high">
+      <div class="flag-bar"></div>
+      <div class="flag-issue"><b>YTD budget gap widened $106,098 in four days</b>; combined gap now $3.85M (−60.5%). CE is +1.5% vs LY YTD, but budget assumed 1.96× LY</div>
+      <div class="flag-impact">Budget-setting gap, now confirmed on matched data</div>
       <div class="flag-resp">Finance / Ownership</div>
       <div class="flag-date">Next budget review</div>
     </div>
-    <div class="flag-row sev-watch">
+    <div class="flag-row sev-high">
       <div class="flag-bar"></div>
-      <div class="flag-issue"><b>CE cash balance fell TZS 67.8m → 9.9m</b> across two snapshots (4–6 Sept)</div>
-      <div class="flag-impact">Reduced buffer against ongoing revenue shortfall</div>
-      <div class="flag-resp">Finance</div>
-      <div class="flag-date">Next report</div>
-    </div>
-    <div class="flag-row sev-watch">
-      <div class="flag-bar"></div>
-      <div class="flag-issue"><b>Creditors:</b> TZS 40.0m aged 31–60 days; TZS 3.67m aged over a year (New Arusha Hotel)</div>
+      <div class="flag-issue"><b>Creditors over 30 days up 60.6% to TZS 52.0M</b> (31.8% of total); TSM Electricals TZS 12.98M now 61–90 days; TZS 3.67M over a year</div>
       <div class="flag-impact">Supplier relationship / late-payment risk</div>
       <div class="flag-resp">Accounts</div>
       <div class="flag-date">Next report</div>
     </div>
     <div class="flag-row sev-watch">
       <div class="flag-bar"></div>
-      <div class="flag-issue"><b>Debtors concentration:</b> 41% of outstanding ($39,438) sits with one account, Direct Booking</div>
-      <div class="flag-impact">Cash-flow timing risk</div>
-      <div class="flag-resp">Accounts / Reservations</div>
+      <div class="flag-issue"><b>CE water and sewage</b>: main water line under repair with water trucked from neighbouring camps; septic tanks overflowing; neither in the weekly report</div>
+      <div class="flag-impact">Guest experience and H&amp;S exposure</div>
+      <div class="flag-resp">Camp Manager / Chief Engineer</div>
       <div class="flag-date">Next report</div>
     </div>
     <div class="flag-row sev-watch">
       <div class="flag-bar"></div>
-      <div class="flag-issue"><b>Two WR vehicles unresolved 2+ weeks</b>; new fault on T524 ETG (shock absorber)</div>
-      <div class="flag-impact">Reduced vehicle availability</div>
-      <div class="flag-resp">Maintenance</div>
+      <div class="flag-issue"><b>4 of 6 WR vehicles with open items</b>; oil services overdue on T460, T461 and T340; T460 parts incomplete</div>
+      <div class="flag-impact">Reduced vehicle availability with guests in house</div>
+      <div class="flag-resp">Maintenance / Purchase</div>
       <div class="flag-date">Next report</div>
     </div>
     <div class="flag-row sev-watch">
       <div class="flag-bar"></div>
-      <div class="flag-issue"><b>Identical fire-safety gaps</b> open at both camps: station, evacuation maps, signage</div>
-      <div class="flag-impact">Compliance / safety exposure</div>
+      <div class="flag-issue"><b>Health &amp; safety</b>: fire-safety gaps at both camps (third week); no WR spa office fire report (second request); WR railings and stair strips overdue with guests in house</div>
+      <div class="flag-impact">Compliance and guest-safety exposure</div>
       <div class="flag-resp">HRM / H&amp;S lead</div>
       <div class="flag-date">Next report</div>
+    </div>
+    <div class="flag-row sev-watch">
+      <div class="flag-bar"></div>
+      <div class="flag-issue"><b>DSR prior-year columns still blank</b>; 2025 DSRs supplied separately give a Day 13 comparison only</div>
+      <div class="flag-impact">Year-on-year view lags the report and depends on manual supply</div>
+      <div class="flag-resp">Finance / IT</div>
+      <div class="flag-date">Overdue</div>
     </div>
   </div>
 </div>
 
 <footer>
   <div class="foot-title">Data coverage</div>
-  This cycle incorporates: Weekly Operations Reports (WR Weeks 35 &amp; 36; CE Weeks 34 &amp; 36), the Daily Sales Report for 6 Sept 2026 and its 2025 prior-year equivalent, the Weekly Revenue/Pipeline Report, the Expected Receivable Report, the Creditors Ageing schedule, the Nationality/Foreigner Reports, both camps' Cancellation Reports, both camps' Action Plan trackers, staff attendance registers, and the Craters Edge August 2026 Month-End Report.
+  This cycle incorporates: Weekly Operations Reports (CE 15–21 Sept; WR 14–21 Sept), the Daily Sales Report for 17 Sept 2026 (Day 17; "week" DSR figures are days 14–17), the Expected Receivable Report (13–19 Sept), the Creditors Ageing schedule (19 Sept), No-Show/Cancellation Reports for both camps (arrivals 14–20 Sept), both camps' Action Plan workbooks, the September staff attendance registers for Craters Edge and Warangi Ridge, and the 2025 DSRs for 6 and 13 Sept (prior-year comparison).
   <br><br>
-  Still outstanding: a true Craters Edge Week 35 (22–30 Aug) weekly operations report, and a Warangi Ridge cancellation view covering the forward 9–18 September window. Payroll and a full P&amp;L for Craters Edge remain unavailable: the August Month-End Report's HR section was left blank.
-  <br><br>
-  Report compiled for the week of 1–8 September 2026. Percentage movements and projections are calculated as stated; where source data contained apparent errors or gaps, this is stated rather than estimated.
+  Report compiled for Week 38, 15–21 September 2026. Percentage movements and projections are calculated as stated; where source data contained apparent errors or gaps, this is stated rather than estimated.
 </footer>
 
 <script>
@@ -539,6 +692,18 @@ const WEEKLY_HISTORY = [
     status: 'amber', // first full Owner Report cycle: status history starts here
     ce:  { occ: 37.9, secRev: 2010, fwd: 45.3 },
     wr:  { occ: 26.66, secRev: 343, fwd: 6.33 }
+  },
+  {
+    week: 'Wk37', label: '8–14 Sept',
+    status: 'amber', // held at amber; Warangi Ridge red on its own
+    ce:  { occ: 45.0, secRev: 1785, fwd: 35.0 },  // CE forward window reported as 7 days
+    wr:  { occ: 7.14, secRev: 350, fwd: 40.33 }   // WR as reported; DSR basis ~1.9% (see report 2.1)
+  },
+  {
+    week: 'Wk38', label: '15–21 Sept',
+    status: 'red', // moved from amber: WR recovery-plan trigger met; headroom touched $50,113
+    ce:  { occ: 35.0, secRev: 660, fwd: 43.5 },   // CE forward window 7 days
+    wr:  { occ: 40.0, secRev: 0, fwd: 53.33 }     // WR as reported (peak rooms/15); bed-night basis 11.2%
   }
 ];
 
@@ -628,7 +793,7 @@ if (typeof Chart === 'undefined') {
         tooltip:{
           backgroundColor:'#1C2921', borderColor:'rgba(241,236,223,0.2)', borderWidth:1,
           titleColor:'#F3EFE4', bodyColor:'#F3EFE4', padding:10, titleFont:{size:12,weight:'600'}, bodyFont:{size:12},
-          callbacks:{ label: (ctx)=> ` ${ctx.dataset.label}: ${yFmt(ctx.parsed.y)}` }
+          callbacks:{ label: (ctx)=> ctx.parsed.y==null ? ` ${ctx.dataset.label}: not provided` : ` ${ctx.dataset.label}: ${yFmt(ctx.parsed.y)}` }
         }
       },
       scales:{
@@ -640,17 +805,17 @@ if (typeof Chart === 'undefined') {
     new Chart(document.getElementById('chartMtd'), {
       type:'bar',
       data:{ labels:['MTD Actual','MTD Budget','Month-End\nForecast'], datasets:[
-        { label:'Craters Edge', data:[76508,135690,382540], backgroundColor:CE, borderRadius:2 },
-        { label:'Warangi Ridge', data:[15423,98988,77115], backgroundColor:WR, borderRadius:2 }
+        { label:'Craters Edge', data:[222113,384455,391964], backgroundColor:CE, borderRadius:2 },
+        { label:'Warangi Ridge', data:[18754,280466,33095], backgroundColor:WR, borderRadius:2 }
       ]},
       options: commonOpts(fmtUSD)
     });
 
     new Chart(document.getElementById('chartYtd'), {
       type:'bar',
-      data:{ labels:['YTD Actual\n2026','YTD Budget\n2026','YTD Actual\n2025 (LY)'], datasets:[
-        { label:'Craters Edge', data:[1931876,3751344,1936175], backgroundColor:CE, borderRadius:2 },
-        { label:'Warangi Ridge', data:[429611,2179045,68928], backgroundColor:WR, borderRadius:2 }
+      data:{ labels:['Actual 2026\n17 Sept','Budget 2026\n17 Sept','Actual 2026\n13 Sept','Actual 2025 (LY)\n13 Sept'], datasets:[
+        { label:'Craters Edge', data:[2077481,4000109,2027127,1997018], backgroundColor:CE, borderRadius:2 },
+        { label:'Warangi Ridge', data:[432942,2360523,432942,70907], backgroundColor:WR, borderRadius:2 }
       ]},
       options: commonOpts(fmtUSDk)
     });
@@ -658,11 +823,11 @@ if (typeof Chart === 'undefined') {
     new Chart(document.getElementById('chartDept'), {
       type:'bar',
       data:{ labels:['Craters Edge','Warangi Ridge'], datasets:[
-        { label:'Bar', data:[10,168], backgroundColor:'#7FA36B', borderRadius:2 },
-        { label:'Shop', data:[230,0], backgroundColor:'#C7A15A', borderRadius:2 },
-        { label:'Activity', data:[230,0], backgroundColor:'#B0855C', borderRadius:2 },
-        { label:'Meals', data:[100,0], backgroundColor:'#C7623F', borderRadius:2 },
-        { label:'Spa', data:[1440,175], backgroundColor:'#8C7EA6', borderRadius:2 }
+        { label:'Bar', data:[0,0], backgroundColor:'#7FA36B', borderRadius:2 },
+        { label:'Shop', data:[180,0], backgroundColor:'#C7A15A', borderRadius:2 },
+        { label:'Activity', data:[0,0], backgroundColor:'#B0855C', borderRadius:2 },
+        { label:'Meals', data:[0,0], backgroundColor:'#C7623F', borderRadius:2 },
+        { label:'Spa', data:[480,0], backgroundColor:'#8C7EA6', borderRadius:2 }
       ]},
       options: commonOpts(fmtUSD)
     });
