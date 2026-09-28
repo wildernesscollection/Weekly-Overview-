@@ -1,842 +1,451 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Wilderness Collection: Owner Dashboard, Week 38</title>
+<title>Wilderness Collection · Owner Dashboard, Week 39</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>
   :root{
-    --ink:#141F1A;
-    --ink-2:#1C2921;
-    --ink-3:#233128;
-    --line: rgba(241,236,223,0.14);
-    --line-strong: rgba(241,236,223,0.28);
-    --paper:#F1ECDF;
-    --text-hi:#F3EFE4;
-    --text-lo:#A9B3A3;
-    --text-faint:#7C8A7C;
-    --brass:#C7A15A;
-    --brass-hi:#E0C384;
-    --moss:#8AAE73;
-    --moss-dim:#5F7A50;
-    --rust:#C7623F;
-    --rust-dim: rgba(199,98,63,0.16);
-    --amber:#D9A441;
-    --amber-dim: rgba(217,164,65,0.16);
-    --ce:#8AAE73;
-    --wr:#C7A15A;
-    --radius: 3px;
+    --bg:#F5F3EE; --surface:#FFFFFF; --surface-2:#FAF9F6; --line:#E3DFD6; --line-strong:#CFC9BC;
+    --text:#1B2124; --text-2:#3F4A50; --text-3:#5B656B;
+    --good:#1D7A46; --good-bg:#E4F2E9; --bad:#B42318; --bad-bg:#FBE7E5; --watch:#9A5B00; --watch-bg:#FBF0DC; --muted-bg:#EEF0F1;
+    --ce:#2F6690; --wr:#7B5EA7; --ly:#A9B1B8; --budget:#5B656B;
+    --radius:10px;
+    box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
   }
-  *{box-sizing:border-box;}
-  html{scroll-padding-top:env(safe-area-inset-top,0px);}
-  body{
-    margin:0;
-    background:var(--ink);
-    color:var(--text-hi);
-    font-family:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
-    -webkit-font-smoothing:antialiased;
-    padding-top:env(safe-area-inset-top,0px);
-    padding-bottom:env(safe-area-inset-bottom,0px);
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+    --bg:#11161A; --surface:#182026; --surface-2:#1D262D; --line:#2A353D; --line-strong:#3A4750;
+    --text:#EEF1F2; --text-2:#C9D1D5; --text-3:#A3AEB4;
+    --good:#5CC48A; --good-bg:#15321F; --bad:#F2877D; --bad-bg:#3A1D1A; --watch:#E3AE55; --watch-bg:#34280F; --muted-bg:#232D34;
+    --ce:#6FA8D6; --wr:#B39DDB; --ly:#6B7780; --budget:#A3AEB4;
+  } }
+  :root[data-theme="dark"]{
+    --bg:#11161A; --surface:#182026; --surface-2:#1D262D; --line:#2A353D; --line-strong:#3A4750;
+    --text:#EEF1F2; --text-2:#C9D1D5; --text-3:#A3AEB4;
+    --good:#5CC48A; --good-bg:#15321F; --bad:#F2877D; --bad-bg:#3A1D1A; --watch:#E3AE55; --watch-bg:#34280F; --muted-bg:#232D34;
+    --ce:#6FA8D6; --wr:#B39DDB; --ly:#6B7780; --budget:#A3AEB4;
   }
-  .num{ font-variant-numeric: tabular-nums; font-feature-settings:"tnum" 1; }
-  .serif{ font-family:'Fraunces', serif; }
-  a{color:inherit;}
-
-  /* ===== Header / masthead ===== */
-  .masthead{
-    max-width:1180px;
-    margin:0 auto;
-    padding:38px 32px 26px;
-    border-bottom:1px solid var(--line-strong);
-  }
-  .masthead-top{
-    display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap;
-  }
-  .brandline{
-    display:flex; align-items:center; gap:10px;
-    text-transform:uppercase; letter-spacing:.14em; font-size:11.5px; color:var(--brass-hi);
-    font-weight:600;
-  }
-  .brandline .dot{width:5px;height:5px;border-radius:50%;background:var(--brass);display:inline-block;}
-  h1.title{
-    font-family:'Fraunces', serif; font-weight:500; font-style:italic;
-    font-size:clamp(28px,4vw,40px); line-height:1.08; margin:10px 0 6px; color:var(--text-hi);
-  }
-  .subtitle{ color:var(--text-lo); font-size:15px; max-width:640px; line-height:1.5;}
-  .status-block{ text-align:right; }
-  .status-pill{
-    display:inline-flex; align-items:center; gap:8px;
-    border:1px solid var(--amber); color:var(--amber);
-    padding:7px 14px; border-radius:100px; font-size:12.5px; font-weight:600;
-    letter-spacing:.06em; text-transform:uppercase;
-  }
-  .status-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);}
-  .status-pill.red{ border-color:var(--rust); color:var(--rust); }
-  .status-pill.red .dot{ background:var(--rust); }
-  .status-note{ color:var(--text-faint); font-size:12.5px; margin-top:8px; max-width:220px; }
-  .coverage{ color:var(--text-faint); font-size:12.5px; margin-top:16px; }
-
-  /* ===== Ledger KPI strip ===== */
-  .ledger{
-    max-width:1180px; margin:0 auto; padding:0 32px;
-    display:grid; grid-template-columns:repeat(5,1fr);
-    border-bottom:1px solid var(--line-strong);
-  }
-  .ledger-item{
-    padding:22px 20px; border-right:1px solid var(--line);
-  }
-  .ledger-item:last-child{border-right:none;}
-  .ledger-label{ font-size:11px; text-transform:uppercase; letter-spacing:.09em; color:var(--text-faint); margin-bottom:10px;}
-  .ledger-value{ font-size:26px; font-weight:600; line-height:1.05; }
-  .ledger-sub{ font-size:12.5px; color:var(--text-lo); margin-top:6px; }
-  .flag-up{color:var(--moss);}
-  .flag-down{color:var(--rust);}
-  .flag-flat{color:var(--text-lo);}
-
-  /* ===== Section wrapper ===== */
-  .section{ max-width:1180px; margin:0 auto; padding:44px 32px; border-bottom:1px solid var(--line);}
-  .section:last-of-type{border-bottom:none;}
-  .section-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:22px; gap:16px; flex-wrap:wrap;}
-  .section-eyebrow{ font-size:12px; color:var(--text-faint); }
-  h2.section-title{
-    font-family:'Fraunces', serif; font-weight:500; font-size:23px; margin:2px 0 0; color:var(--text-hi);
-  }
-
-  /* ===== Property comparison ===== */
-  .camps{ display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--line-strong); border-radius:var(--radius); overflow:hidden;}
-  .camp{ padding:26px 28px; }
-  .camp + .camp{ border-left:1px solid var(--line-strong);}
-  .camp-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;}
-  .camp-name{ font-family:'Fraunces', serif; font-size:19px; font-weight:500; display:flex; align-items:center; gap:9px;}
-  .camp-swatch{ width:9px; height:9px; border-radius:50%; display:inline-block;}
-  .camp-name.ce .camp-swatch{background:var(--ce);}
-  .camp-name.wr .camp-swatch{background:var(--wr);}
-  .camp-tag{ font-size:11px; padding:4px 9px; border-radius:100px; font-weight:600; letter-spacing:.04em;}
-  .tag-good{ background:rgba(138,174,115,0.14); color:var(--moss);}
-  .tag-bad{ background:var(--rust-dim); color:var(--rust);}
-  .camp-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px 20px; margin-bottom:18px;}
-  .metric-label{ font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--text-faint); margin-bottom:5px;}
-  .metric-value{ font-size:20px; font-weight:600; }
-  .metric-vs{ font-size:12px; color:var(--text-lo); margin-top:3px; }
-  .camp-note{
-    font-size:13px; line-height:1.55; color:var(--text-lo); padding-top:16px; border-top:1px solid var(--line);
-  }
-  .camp-note b{color:var(--text-hi); font-weight:600;}
-
-  /* ===== Charts ===== */
-  .chart-grid{ display:grid; grid-template-columns:1.15fr 1fr 1fr; gap:20px; }
-  .chart-card{ border:1px solid var(--line-strong); border-radius:var(--radius); padding:20px 20px 12px; background:var(--ink-2); }
-  .chart-title{ font-size:13px; font-weight:600; margin-bottom:2px;}
-  .chart-caption{ font-size:11.5px; color:var(--text-faint); margin-bottom:14px;}
-  .chart-wrap{ position:relative; height:230px; }
-
-  /* ===== Status timeline ===== */
-  .status-timeline{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
-  .tl-item{ display:flex; flex-direction:column; align-items:center; gap:6px; }
-  .tl-dot{ width:11px; height:11px; border-radius:50%; border:1.5px solid var(--line-strong); background:transparent; }
-  .tl-dot.amber{ background:var(--amber); border-color:var(--amber); }
-  .tl-dot.red{ background:var(--rust); border-color:var(--rust); }
-  .tl-dot.green{ background:var(--moss); border-color:var(--moss); }
-  .tl-label{ font-size:10px; color:var(--text-faint); letter-spacing:.02em; }
-  .trend-note{ font-size:12px; color:var(--text-faint); margin-top:16px; line-height:1.65; max-width:900px; }
-
-  /* ===== Red flags ===== */
-  .flags{ display:flex; flex-direction:column; }
-  .flag-row{
-    display:grid; grid-template-columns: 3px 1.7fr 1fr 100px 120px;
-    gap:18px; align-items:start;
-    padding:16px 0; border-bottom:1px solid var(--line);
-  }
-  .flag-row:last-child{border-bottom:none;}
-  .flag-bar{ align-self:stretch; border-radius:2px; }
-  .sev-critical .flag-bar{background:var(--rust);}
-  .sev-high .flag-bar{background:var(--amber);}
-  .sev-watch .flag-bar{background:var(--text-faint);}
-  .flag-issue{ font-size:14px; line-height:1.5; }
-  .flag-issue b{font-weight:600;}
-  .flag-impact{ font-size:12.5px; color:var(--text-lo); line-height:1.5;}
-  .flag-resp{ font-size:12px; color:var(--text-faint); }
-  .flag-date{ font-size:12px; color:var(--brass-hi); text-align:right; font-weight:500;}
-  .flags-head{
-    display:grid; grid-template-columns: 3px 1.7fr 1fr 100px 120px; gap:18px;
-    font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-faint);
-    padding-bottom:10px; border-bottom:1px solid var(--line-strong);
-  }
-
-  /* ===== Resolved this cycle ===== */
-  .resolved{ display:flex; flex-direction:column; gap:14px; }
-  .resolved-item{ display:flex; gap:12px; align-items:flex-start; }
-  .resolved-check{
-    width:18px; height:18px; border-radius:50%; border:1px solid var(--moss); color:var(--moss);
-    display:flex; align-items:center; justify-content:center; font-size:11px; flex:none; margin-top:2px;
-  }
-  .resolved-text{ font-size:13.5px; line-height:1.55; color:var(--text-lo); }
-  .resolved-text b{ color:var(--text-hi); font-weight:600; }
-
-  /* ===== two-col layout ===== */
-  .two-col{ display:grid; grid-template-columns: 1.55fr 1fr; gap:36px; align-items:start;}
-
-  /* ===== financial table ===== */
-  table.fin{ width:100%; border-collapse:collapse; font-size:13px; }
-  table.fin th{ text-align:right; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); font-weight:600; padding:0 0 10px; border-bottom:1px solid var(--line-strong);}
-  table.fin th:first-child, table.fin td:first-child{ text-align:left; }
-  table.fin td{ text-align:right; padding:11px 0; border-bottom:1px solid var(--line); }
-  table.fin tr:last-child td{ border-bottom:none; }
-  table.fin .neg{ color:var(--rust); font-weight:600;}
-  table.fin .pos{ color:var(--moss); font-weight:600;}
-  table.fin .grp-label{ font-weight:600; color:var(--text-hi);}
-
-  /* ===== footer ===== */
-  footer{ max-width:1180px; margin:0 auto; padding:30px 32px 46px; color:var(--text-faint); font-size:12px; line-height:1.7;}
-  footer .foot-title{ color:var(--text-lo); font-weight:600; margin-bottom:6px; }
-
-  /* ===== leave list / small tables (added Week 37) ===== */
-  .scroll-x{ overflow-x:auto; }
-  table.fin td.l, table.fin th.l{ text-align:left; }
-  .pill-mini{ display:inline-block; font-size:10.5px; padding:2px 8px; border-radius:100px; font-weight:600; letter-spacing:.03em; }
-  .pm-al{ background:rgba(199,161,90,0.16); color:var(--brass-hi); }
-  .pm-s{ background:var(--rust-dim); color:var(--rust); }
-  .pm-ml{ background:rgba(138,174,115,0.14); color:var(--moss); }
-  .note-sm{ font-size:12.5px; color:var(--text-lo); line-height:1.6; margin-top:16px; }
-  .note-sm b{ color:var(--text-hi); }
-
-  @media (max-width:860px){
-    .ledger{grid-template-columns:repeat(2,1fr);}
-    .ledger-item:nth-child(2n){border-right:none;}
-    .camps{grid-template-columns:1fr;}
-    .camp+.camp{border-left:none; border-top:1px solid var(--line-strong);}
-    .chart-grid{grid-template-columns:1fr;}
-    .two-col{grid-template-columns:1fr;}
-    .flag-row, .flags-head{grid-template-columns: 3px 1fr; }
-    .flag-impact, .flag-resp, .flag-date{display:none;}
-    .status-block{text-align:left;}
-    .masthead-top{flex-direction:column;}
+  *{box-sizing:border-box}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 22px 60px}
+  h1,h2,h3{font-family:'Fraunces',Georgia,'Times New Roman',serif;font-weight:600;margin:0;color:var(--text)}
+  h1{font-size:clamp(28px,4.2vw,40px);line-height:1.1}
+  h2{font-size:clamp(21px,2.6vw,25px);line-height:1.2}
+  h3{font-size:18px}
+  .eyebrow{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3)}
+  .n{font-variant-numeric:tabular-nums}
+  .good{color:var(--good)} .bad{color:var(--bad)} .watchc{color:var(--watch)}
+  section{margin-top:34px}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+  .sec-head p{margin:4px 0 0;color:var(--text-3);font-size:14px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px}
+  .grid{display:grid;gap:14px} .grid>*{min-width:0}
+  /* header */
+  header .top{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:flex-start}
+  .sub{color:var(--text-2);margin-top:8px;font-size:16px}
+  .basis{display:inline-block;margin-top:12px;font-size:14px;color:var(--text-2);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+  .status{max-width:340px}
+  .status-pill{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:15px;letter-spacing:.04em;text-transform:uppercase;padding:6px 14px;border-radius:999px;background:var(--bad-bg);color:var(--bad)}
+  .status-pill .dot{width:10px;height:10px;border-radius:50%;background:var(--bad)}
+  .status p{margin:8px 0 0;font-size:14.5px;color:var(--text-2)}
+  .timeline{display:flex;gap:12px;margin-top:10px;font-size:13px;color:var(--text-3)}
+  .timeline span{display:inline-flex;align-items:center;gap:5px}
+  .tl{width:10px;height:10px;border-radius:50%;border:2px solid var(--line-strong)}
+  .tl.amber{background:var(--watch);border-color:var(--watch)} .tl.red{background:var(--bad);border-color:var(--bad)}
+  /* KPIs */
+  .kpis{grid-template-columns:repeat(5,minmax(0,1fr));margin-top:24px}
+  .kpi .lab{font-size:13px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em}
+  .kpi .val{font-size:30px;font-weight:600;margin:6px 0 2px;line-height:1.1}
+  .kpi .ctx{font-size:14.5px;color:var(--text-2)}
+  .delta{display:inline-block;margin-top:8px;font-size:13.5px;font-weight:600;padding:2px 9px;border-radius:6px}
+  .delta.good{background:var(--good-bg)} .delta.bad{background:var(--bad-bg)} .delta.watch{background:var(--watch-bg);color:var(--watch)}
+  /* tables */
+  .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+  table.tbl{width:100%;border-collapse:collapse;font-size:15px}
+  .tbl th{text-align:right;font-size:13px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;padding:8px 10px;border-bottom:2px solid var(--line-strong);white-space:nowrap}
+  .tbl td{text-align:right;padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+  .tbl th:first-child,.tbl td:first-child,.tbl .l{text-align:left}
+  .tbl .grp td{background:var(--surface-2);font-weight:600;color:var(--text);text-align:left;padding-top:12px}
+  .tbl .tot td,.tbl .strong{font-weight:600}
+  .tbl .tot td{border-top:2px solid var(--line-strong)}
+  .tbl.wide{min-width:720px}
+  .pill{display:inline-block;font-size:12.5px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
+  .pill.good{background:var(--good-bg);color:var(--good)} .pill.bad{background:var(--bad-bg);color:var(--bad)} .pill.watch{background:var(--watch-bg);color:var(--watch)} .pill.muted{background:var(--muted-bg);color:var(--text-2)}
+  .note{font-size:14px;color:var(--text-3);margin:10px 0 0}
+  /* camps */
+  .camps{grid-template-columns:1fr 1fr}
+  .camp h3{display:flex;align-items:center;gap:9px}
+  .sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+  .camp .m{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px;margin:14px 0}
+  .camp .m .lab{font-size:13px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  .camp .m .v{font-size:22px;font-weight:600}
+  .camp .m .c{font-size:14px;color:var(--text-2)}
+  .camp p{margin:0;font-size:15px;color:var(--text-2);border-top:1px solid var(--line);padding-top:12px}
+  /* charts */
+  .charts{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .chart h3{font-family:'IBM Plex Sans',sans-serif;font-size:16px;font-weight:600}
+  .chart .cap{font-size:13.5px;color:var(--text-3);margin:2px 0 10px}
+  .cw{position:relative;height:250px}
+  .insight{font-size:15.5px;color:var(--text-2);margin:14px 0 0;max-width:900px}
+  /* details */
+  details{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);margin-top:10px}
+  summary{cursor:pointer;padding:14px 18px;font-weight:600;font-size:16px;list-style:none;display:flex;justify-content:space-between;gap:10px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:'+';font-size:20px;color:var(--text-3);line-height:1}
+  details[open] summary::after{content:'−'}
+  summary small{font-weight:400;color:var(--text-3);font-size:14px;margin-left:8px}
+  details .inner{padding:0 18px 18px}
+  details ul{margin:6px 0 0;padding-left:20px} details li{margin:6px 0;color:var(--text-2)}
+  footer{margin-top:34px;font-size:13.5px;color:var(--text-3);border-top:1px solid var(--line);padding-top:14px}
+  .chart-fallback{display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-3);font-size:14px;text-align:center;padding:0 12px}
+  @media (max-width:980px){ .kpis{grid-template-columns:repeat(3,minmax(0,1fr))} .charts{grid-template-columns:1fr 1fr} }
+  @media (max-width:720px){ .kpis{grid-template-columns:1fr 1fr} .camps,.charts{grid-template-columns:1fr} .wrap{padding:20px 14px 48px} .kpi .val{font-size:26px} .status{max-width:none} }
+  @media (max-width:720px){ .tbl{font-size:14px} .tbl th,.tbl td{padding:8px 7px} .tbl.wide{min-width:540px} .basis{border-radius:10px} }
+  @media print{
+    :root{--bg:#fff;--surface:#fff}
+    body{font-size:12.5pt} .wrap{max-width:none;padding:0}
+    .card,details,section{break-inside:avoid} summary::after{content:''}
+    .cw{height:220px}
   }
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<div class="masthead">
-  <div class="masthead-top">
+<header>
+  <div class="top">
     <div>
-      <div class="brandline"><span class="dot"></span>Wilderness Collection · Owner Dashboard</div>
-      <h1 class="title">Week 38 performance, at a glance</h1>
-      <div class="subtitle">Craters Edge &amp; Warangi Ridge · Week 38, 15–21 September 2026 · prepared by the Operations Manager for the Owner</div>
+      <div class="eyebrow">Wilderness Collection · Owner dashboard</div>
+      <h1>Week 39 · 22–28 September 2026</h1>
+      <div class="sub">Craters Edge &amp; Warangi Ridge · prepared by Riaan Van Der Watt</div>
+      <div class="basis">Financials to 27 Sept (Daily Sales Report, days 18–27) · WR weekly report 21–28 Sept · no CE weekly report · compared with Week 38</div>
     </div>
-    <div class="status-block">
-      <span class="status-pill red"><span class="dot"></span>Red, from amber</span>
-      <div class="status-note">Last week's trigger was met: no WR recovery plan received, and overdraft headroom touched $50,113 on 17 Sept. CE amber, WR red. Returns to amber once the WR plan is in place and a weekly cash flow keeps headroom clear of $50k.</div>
+    <div class="status">
+      <span class="status-pill"><span class="dot"></span>Red, unchanged</span>
+      <p>No Warangi Ridge recovery plan, no September re-forecast and no weekly cash flow, while overdraft headroom fell 39% to $62,769. Returns to amber once the plan and a deposit rule are in place and a weekly cash flow keeps headroom above $50k.</p>
+      <div class="timeline" id="timeline"></div>
     </div>
   </div>
-  <div class="coverage">Financial position refreshed to Day 17 (17 Sept 2026) Daily Sales Report · baseline week: Week 37, 8–14 Sept</div>
-</div>
 
-<div class="ledger">
-  <div class="ledger-item">
-    <div class="ledger-label">Combined MTD sales</div>
-    <div class="ledger-value num">$240,867</div>
-    <div class="ledger-sub flag-down num">vs $664,921 budget · −63.8%</div>
+  <div class="grid kpis">
+    <div class="card kpi"><div class="lab">September sales, both camps</div><div class="val n">$397,180</div><div class="ctx">Budget $1,056,051 · −62.4%</div><span class="delta good">▲ from −63.8% last week</span></div>
+    <div class="card kpi"><div class="lab">Year-to-date sales</div><div class="val n">$2.67M</div><div class="ctx">Budget $6.75M · −60.5%</div><span class="delta bad">▼ gap +$235k in 10 days</span></div>
+    <div class="card kpi"><div class="lab">Overdraft headroom</div><div class="val n">$62,769</div><div class="ctx">BOB facility 96.4% drawn</div><span class="delta bad">▼ −$40,136 on last week</span></div>
+    <div class="card kpi"><div class="lab">Craters Edge vs last year</div><div class="val n">+27.4%</div><div class="ctx">September to the 27th · YTD +3.0%</div><span class="delta watch">Rate $1,390 in days 18–27</span></div>
+    <div class="card kpi"><div class="lab">Warangi Ridge guest nights</div><div class="val n">36</div><div class="ctx">18.4% occupancy · next 10 days 14 guests</div><span class="delta good">▲ from 22, second weekly rise</span></div>
   </div>
-  <div class="ledger-item">
-    <div class="ledger-label">Combined YTD sales</div>
-    <div class="ledger-value num">$2.51M</div>
-    <div class="ledger-sub flag-down num">vs $6.36M budget · −60.5%</div>
-  </div>
-  <div class="ledger-item">
-    <div class="ledger-label">Overdraft drawn, 17 Sept close</div>
-    <div class="ledger-value num">$497k</div>
-    <div class="ledger-sub flag-down num">headroom $103k · was $50k at opening</div>
-  </div>
-  <div class="ledger-item">
-    <div class="ledger-label">CE occupancy, week</div>
-    <div class="ledger-value num">35.0%</div>
-    <div class="ledger-sub flag-up num">as forecast · next 7 days 43.5%</div>
-  </div>
-  <div class="ledger-item">
-    <div class="ledger-label">WR bed-nights, week</div>
-    <div class="ledger-value num">22</div>
-    <div class="ledger-sub flag-up num">from 4 · 11 guests in on 20 Sept</div>
-  </div>
-</div>
+</header>
 
-<!-- ===== Momentum / running history ===== -->
-<div class="section">
-  <div class="section-head">
-    <div>
-      <div class="section-eyebrow">Running weekly history · this section grows each cycle</div>
-      <h2 class="section-title">Momentum across weeks</h2>
-    </div>
-    <div class="status-timeline" id="statusTimeline"></div>
-  </div>
-  <div class="chart-grid">
-    <div class="chart-card">
-      <div class="chart-title">Occupancy % by week</div>
-      <div class="chart-caption">As reported in each camp's weekly report</div>
-      <div class="chart-wrap"><canvas id="trendOcc"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Forward booking signal</div>
-      <div class="chart-caption">As reported at each cycle (CE 7-day basis, WR 10-day)</div>
-      <div class="chart-wrap"><canvas id="trendFwd"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Secondary revenue by week</div>
-      <div class="chart-caption">Bar + Shop + Activity + Meals + Spa</div>
-      <div class="chart-wrap"><canvas id="trendSecRev"></canvas></div>
-    </div>
-  </div>
-  <p class="trend-note">Craters Edge's Week 35 operations report and Warangi Ridge's Week 34 report were never supplied, so those points show as gaps rather than estimates. Warangi Ridge's percentages are plotted as reported; they match peak rooms occupied over 15 rooms (6 of 15 = 40.0% in Week 38), not weekly occupancy. On a bed-night basis Warangi Ridge was about 11.2% in Week 38 (22 of 196 bed-nights) and 2.0% in Week 37. Craters Edge's forecast has matched the following week's result exactly for two weeks running. Craters Edge secondary revenue has now fallen for two consecutive weeks.</p>
-</div>
-
-<!-- ===== Camps comparison ===== -->
-<div class="section">
-  <div class="section-head">
-    <div>
-      <div class="section-eyebrow">Property comparison</div>
-      <h2 class="section-title">A forecast soft week at one camp, first guests in weeks at the other</h2>
-    </div>
-  </div>
-  <div class="camps">
-    <div class="camp">
-      <div class="camp-head">
-        <div class="camp-name ce"><span class="camp-swatch"></span>Craters Edge</div>
-        <div class="camp-tag tag-good">Soft week, as forecast</div>
-      </div>
-      <div class="camp-grid">
-        <div>
-          <div class="metric-label">Occupancy, MTD</div>
-          <div class="metric-value num">47%</div>
-          <div class="metric-vs num">Budget 65% · Day 13 was 47%</div>
-        </div>
-        <div>
-          <div class="metric-label">ADR, MTD</div>
-          <div class="metric-value num">$1,596</div>
-          <div class="metric-vs num">Budget $1,816 · Day 13 was $1,597</div>
-        </div>
-        <div>
-          <div class="metric-label">Sales, MTD</div>
-          <div class="metric-value num">$222,113</div>
-          <div class="metric-vs num">Budget $384,455 · −42.2%</div>
-        </div>
-        <div>
-          <div class="metric-label">Sales vs last year, 1–13 Sept</div>
-          <div class="metric-value num flag-up">+30.5%</div>
-          <div class="metric-vs num">+15.1% per available room · YTD +1.5%</div>
-        </div>
-      </div>
-      <div class="camp-note">Bed-nights fell <b>22.2%</b> to 98, exactly as forecast; next 7 days <b>43.5%</b>. Secondary revenue fell for a second week to <b>$660</b> (−63.0%). Diesel per bed-night up <b>33.2%</b> and only <b>700 L</b> in storage, less than a week's use. Action plan records water supply line works and overflowing septic tanks. Guest feedback: <b>excellent</b>, no complaints.</div>
-    </div>
-    <div class="camp">
-      <div class="camp-head">
-        <div class="camp-name wr"><span class="camp-swatch"></span>Warangi Ridge</div>
-        <div class="camp-tag tag-bad">Guests arrived, revenue not yet</div>
-      </div>
-      <div class="camp-grid">
-        <div>
-          <div class="metric-label">Occupancy, MTD</div>
-          <div class="metric-value num">4%</div>
-          <div class="metric-vs num">Budget 56% · Day 13 was 5%</div>
-        </div>
-        <div>
-          <div class="metric-label">Guest bed-nights, week</div>
-          <div class="metric-value num flag-up">22</div>
-          <div class="metric-vs num">Week 37: 4 · 11 guests forecast, 11 arrived</div>
-        </div>
-        <div>
-          <div class="metric-label">Sales, MTD</div>
-          <div class="metric-value num">$18,754</div>
-          <div class="metric-vs num">Budget $280,466 · −93.3%</div>
-        </div>
-        <div>
-          <div class="metric-label">Confirmed 2026 bookings</div>
-          <div class="metric-value num flag-down">−$46,176</div>
-          <div class="metric-vs num">$926,912 to $880,736 in 4 days · −5.0%</div>
-        </div>
-      </div>
-      <div class="camp-note">Sold <b>$0</b> in days 14–17 against a $65,992 budget; the 20 Sept arrivals fall after the DSR date. Secondary revenue <b>$0</b>. Present staff-days rose 11.8% to 256 with guests in house on 2 of 7 days. <b>No recovery plan</b> or deposit rule received. Guest feedback: <b>positive</b>, no complaints.</div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== Charts ===== -->
-<div class="section">
-  <div class="section-head">
-    <div>
-      <div class="section-eyebrow">Figures 1–3</div>
-      <h2 class="section-title">Revenue, budget and forward trend</h2>
-    </div>
-  </div>
-  <div class="chart-grid">
-    <div class="chart-card">
-      <div class="chart-title">MTD Sales: Actual vs Budget vs Forecast</div>
-      <div class="chart-caption">Day 17, stacked by property · forecast is run-rate</div>
-      <div class="chart-wrap"><canvas id="chartMtd"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">YTD Sales: Actual vs Budget vs LY</div>
-      <div class="chart-caption">Stacked by property · LY matched at 13 Sept from the 2025 DSR (CE excl. permit income; WR 2025 was its opening period)</div>
-      <div class="chart-wrap"><canvas id="chartYtd"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Secondary Revenue by Department</div>
-      <div class="chart-caption">Week 38, CE vs WR</div>
-      <div class="chart-wrap"><canvas id="chartDept"></canvas></div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== Pipeline table + resolved this cycle ===== -->
-<div class="section">
-  <div class="two-col">
-    <div>
-      <div class="section-head">
-        <div>
-          <div class="section-eyebrow">Section 12</div>
-          <h2 class="section-title">Forward bookings, week on week</h2>
-        </div>
-      </div>
-      <div class="scroll-x">
-      <table class="fin">
-        <thead>
-          <tr><th>Confirmed incl. VAT (DSR)</th><th>13 Sept</th><th>17 Sept</th><th>Movement</th><th>%</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Craters Edge, 2026</td><td class="num">$3,335,275</td><td class="num">$3,334,425</td><td class="num">−$850</td><td class="num">0.0%</td></tr>
-          <tr><td>Craters Edge, 2027</td><td class="num">$1,312,307</td><td class="num">$1,312,307</td><td class="num">$0</td><td class="num">0.0%</td></tr>
-          <tr><td>Warangi Ridge, 2026</td><td class="num">$926,912</td><td class="num">$880,736</td><td class="num neg">−$46,176</td><td class="num neg">−5.0%</td></tr>
-          <tr><td>Warangi Ridge, 2027</td><td class="num">$203,702</td><td class="num">$203,702</td><td class="num">$0</td><td class="num">0.0%</td></tr>
-        </tbody>
-      </table>
-      </div>
-      <p class="note-sm">The Weekly Revenue/Pipeline Report was <b>not received</b> this cycle, so the September–November booking-window table cannot be updated (Week 37 3-month totals: CE $893,214, WR $288,651). Warangi Ridge's fall is in <b>confirmed</b> business, unlike the zero-deposit holds that lapsed earlier; reason requires management confirmation.</p>
-    </div>
-    <div>
-      <div class="section-head">
-        <div>
-          <div class="section-eyebrow">Since last report</div>
-          <h2 class="section-title">Resolved this cycle</h2>
-        </div>
-      </div>
-      <div class="resolved">
-        <div class="resolved-item">
-          <div class="resolved-check">✓</div>
-          <div class="resolved-text"><b>Debtors concentration</b>: the $39,438 Direct Booking balance was collected; outstanding debtors fell 70.7% to $22,345 and collections rose for a second period ($104,268).</div>
-        </div>
-        <div class="resolved-item">
-          <div class="resolved-check">✓</div>
-          <div class="resolved-text"><b>WR forecast question</b>: 11 guests forecast for the week, 11 checked in on 20 Sept.</div>
-        </div>
-        <div class="resolved-item">
-          <div class="resolved-check">✓</div>
-          <div class="resolved-text"><b>WR vehicles</b>: T252 BUR back from Arusha and T461 EMC running again; open items down from 5 of 6 vehicles to 4 of 6.</div>
-        </div>
-        <div class="resolved-item">
-          <div class="resolved-check">✓</div>
-          <div class="resolved-text"><b>CE reception roof lining</b>: no longer listed in the weekly report, which now agrees with the action plan.</div>
-        </div>
-        <div class="resolved-item">
-          <div class="resolved-check">✓</div>
-          <div class="resolved-text"><b>CE cancellation report</b>: received after three cycles of requests (38 reservations, arrivals 14–20 Sept).</div>
-        </div>
-        <div class="resolved-item">
-          <div class="resolved-check">✓</div>
-          <div class="resolved-text"><b>Year-on-year comparison</b>: 2025 DSRs received. At 13 Sept CE was +30.5% vs 2025 in September and +1.5% YTD; the budget assumed 2.2× last year.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== Action plans: completed this week (standard from Week 37) ===== -->
-<div class="section">
-  <div class="section-head">
-    <div>
-      <div class="section-eyebrow">Section 15.1 · Action Plans · standard from Week 37</div>
-      <h2 class="section-title">Completed in Week 38 (15–21 Sept)</h2>
-    </div>
-    <div class="section-eyebrow">10 items · CE 3 · WR 7</div>
-  </div>
+<section>
+  <div class="sec-head"><div><h2>Week-on-week snapshot</h2><p>Running history from Week 37; one column is added each week. Change and direction compare the last two weeks; green is better, red is worse, whichever way the number moved. DSR span rows compare days 14–17 with days 18–27</p></div></div>
+  <div class="card" style="padding:6px 8px 10px">
   <div class="scroll-x">
-  <table class="fin">
-    <thead><tr><th>Camp</th><th class="l">Action</th><th class="l">Area</th><th>Completed</th><th class="l">&nbsp;&nbsp;Commentary</th></tr></thead>
+  <table class="tbl wide">
+    <thead><tr><th>Measure</th><th>Week 37</th><th>Week 38</th><th>Week 39</th><th>Change, Wk38 to Wk39</th><th>Direction</th></tr></thead>
     <tbody>
-          <tr><td>CE</td><td class="l">Relief store keeper, both camps</td><td class="l">Stores</td><td class="num">18 Sept</td><td class="l">&nbsp;&nbsp;<b>Follow-up:</b> employed; NCAA/TANAPA permits awaited</td></tr>
-          <tr><td>CE</td><td class="l">Tablecloths</td><td class="l">Linen &amp; tableware</td><td class="num">16 Sept</td><td class="l">&nbsp;&nbsp;Found in storeroom, no purchase needed</td></tr>
-          <tr><td>CE</td><td class="l">Five extra fans</td><td class="l">Staff housing</td><td class="num">16 Sept</td><td class="l">&nbsp;&nbsp;<b>Follow-up:</b> weekly report still lists guide-room fans as needed</td></tr>
-          <tr><td>WR</td><td class="l">Laundry iron roller repair</td><td class="l">Laundry</td><td class="num">20 Sept</td><td class="l">&nbsp;&nbsp;Working; notes still say washing machine not received</td></tr>
-          <tr><td>WR</td><td class="l">T461 EMC parts order</td><td class="l">Vehicles</td><td class="num">15 Sept</td><td class="l">&nbsp;&nbsp;<b>Follow-up:</b> windscreen not fitted, oil service due</td></tr>
-          <tr><td>WR</td><td class="l">T252 BUR repairs in Arusha</td><td class="l">Vehicles</td><td class="num">16 Sept</td><td class="l">&nbsp;&nbsp;Back at camp, drives well</td></tr>
-          <tr><td>WR</td><td class="l">Electrical materials order</td><td class="l">Building works</td><td class="num">15 Sept</td><td class="l">&nbsp;&nbsp;Received on site</td></tr>
-          <tr><td>WR</td><td class="l">Camp/vehicle radio call</td><td class="l">Vehicles</td><td class="num">18 Sept</td><td class="l">&nbsp;&nbsp;Installed on T524 ETG</td></tr>
-          <tr><td>WR</td><td class="l">Labels for detox juice</td><td class="l">Main kitchen</td><td class="num">20 Sept</td><td class="l">&nbsp;&nbsp;Handed to WR team</td></tr>
-          <tr><td>WR</td><td class="l">New windscreen for T223 EHS</td><td class="l">Vehicles</td><td class="num">18 Sept</td><td class="l">&nbsp;&nbsp;<b>Follow-up:</b> Mahindra screen still to be fitted</td></tr>
+      <tr class="grp"><td colspan="6">Group</td></tr>
+      <tr><td>September sales vs budget, both camps</td><td class="n">−62.5%</td><td class="n">−63.8%</td><td class="n">−62.4%</td><td class="n">+1.4 pts</td><td><span class="pill good">Better</span></td></tr>
+      <tr><td>Year-to-date gap to budget</td><td class="n">$3.74M</td><td class="n">$3.85M</td><td class="n">$4.09M</td><td class="n">+$235k</td><td><span class="pill bad">Worse, every week</span></td></tr>
+      <tr><td>Overdraft headroom (day close)</td><td class="n">$93,669</td><td class="n">$102,905</td><td class="n">$62,769</td><td class="n">−39.0%</td><td><span class="pill bad">Worse</span></td></tr>
+      <tr><td>Debtors outstanding</td><td class="n">$76,252</td><td class="n">$22,345</td><td class="n">$34,736</td><td class="n">+55.4%</td><td><span class="pill bad">Worse</span></td></tr>
+      <tr><td>Creditors older than 30 days</td><td class="n">TZS 32.4M</td><td class="n">TZS 52.0M</td><td class="n">TZS 43.2M</td><td class="n">−16.8%</td><td><span class="pill good">Better</span></td></tr>
+      <tr><td>Three-month forward book, both camps</td><td class="n">$1,181,865</td><td class="n">$1,193,272</td><td class="n">$1,173,181</td><td class="n">−1.7%</td><td><span class="pill watch">Watch</span></td></tr>
+      <tr class="grp"><td colspan="6"><span class="sw" style="background:var(--ce)"></span>&nbsp; Craters Edge</td></tr>
+      <tr><td>Occupancy, week (camp report)</td><td class="n">45.0%</td><td class="n">35.0%</td><td class="n">Not received</td><td class="n">n/a</td><td><span class="pill muted">No report</span></td></tr>
+      <tr><td>Occupancy, month to date (DSR)</td><td class="n">47.1%</td><td class="n">46.7%</td><td class="n">47.3%</td><td class="n">+0.6 pts</td><td><span class="pill muted">No material change</span></td></tr>
+      <tr><td>Average room rate, month to date (DSR)</td><td class="n">$1,597</td><td class="n">$1,596</td><td class="n">$1,518</td><td class="n">−4.9%</td><td><span class="pill bad">Worse</span></td></tr>
+      <tr><td>Average room rate, latest DSR span</td><td class="n">n/a</td><td class="n">$1,591</td><td class="n">$1,390</td><td class="n">−12.6%</td><td><span class="pill bad">Worse</span></td></tr>
+      <tr><td>September sales vs budget</td><td class="n">−41.6%</td><td class="n">−42.2%</td><td class="n">−43.7%</td><td class="n">−1.5 pts</td><td><span class="pill bad">Worse, 2nd DSR</span></td></tr>
+      <tr><td>September sales vs last year</td><td class="n">+30.5%</td><td class="n">+22.4%</td><td class="n">+27.4%</td><td class="n">+5.0 pts</td><td><span class="pill good">Better</span></td></tr>
+      <tr><td>Extra spend per guest night (camp report)</td><td class="n">$14.17</td><td class="n">$6.73</td><td class="n">Not received</td><td class="n">n/a</td><td><span class="pill muted">No report</span></td></tr>
+      <tr><td>Extra spend per room night (DSR span)</td><td class="n">n/a</td><td class="n">$23.03</td><td class="n">$23.39</td><td class="n">+1.6%</td><td><span class="pill muted">Flat, low level</span></td></tr>
+      <tr><td>October pipeline</td><td class="n">$278,605</td><td class="n">$313,657</td><td class="n">$283,077</td><td class="n">−9.7%</td><td><span class="pill bad">Worse</span></td></tr>
+      <tr><td>Diesel per guest night</td><td class="n">6.1 L</td><td class="n">8.2 L</td><td class="n">Not received</td><td class="n">n/a</td><td><span class="pill muted">No report</span></td></tr>
+      <tr><td>Staff days per guest night</td><td class="n">1.9</td><td class="n">2.5</td><td class="n">Not received</td><td class="n">n/a</td><td><span class="pill muted">No report</span></td></tr>
+      <tr class="grp"><td colspan="6"><span class="sw" style="background:var(--wr)"></span>&nbsp; Warangi Ridge</td></tr>
+      <tr><td>Guest nights, week</td><td class="n">4</td><td class="n">22</td><td class="n">36</td><td class="n">+63.6%</td><td><span class="pill good">Better, 2nd week</span></td></tr>
+      <tr><td>Occupancy, guest-night basis</td><td class="n">2.0%</td><td class="n">11.2%</td><td class="n">18.4%</td><td class="n">+7.2 pts</td><td><span class="pill good">Better, 2nd week</span></td></tr>
+      <tr><td>Average room rate, month to date (DSR)</td><td class="n">$1,805</td><td class="n">$1,805</td><td class="n">$1,228</td><td class="n">−32.0%</td><td><span class="pill bad">Investigate</span></td></tr>
+      <tr><td>September sales vs budget</td><td class="n">−91.3%</td><td class="n">−93.3%</td><td class="n">−88.0%</td><td class="n">+5.3 pts</td><td><span class="pill good">Better, 1st time</span></td></tr>
+      <tr><td>October pipeline</td><td class="n">$91,514</td><td class="n">$101,594</td><td class="n">$92,179</td><td class="n">−9.3%</td><td><span class="pill bad">Worse</span></td></tr>
+      <tr><td>Staff days per guest night</td><td class="n">57.3</td><td class="n">11.7</td><td class="n">7.9</td><td class="n">−32.7%</td><td><span class="pill good">Better, still high</span></td></tr>
+      <tr><td>Diesel per guest night</td><td class="n">8.0 L</td><td class="n">4.5 L</td><td class="n">6.7 L</td><td class="n">+46.7%</td><td><span class="pill watch">Watch</span></td></tr>
+      <tr><td>Complimentary guest nights</td><td class="n">n/a</td><td class="n">n/a</td><td class="n">6 of 36</td><td class="n">DSR shows 0</td><td><span class="pill bad">Investigate</span></td></tr>
+      <tr><td>Vehicles with open faults</td><td class="n">5 of 6</td><td class="n">4 of 6</td><td class="n">4 of 6</td><td class="n">0</td><td><span class="pill muted">No change</span></td></tr>
     </tbody>
   </table>
   </div>
-  <p class="note-sm">Only items marked "Complete" in the Action Plan workbooks with a completion date inside 15–21 September are shown. Three items marked complete without an in-week date are excluded (CE vehicle parking with car wash, WR pool chemicals, WR bolts and nuts). Open items that need attention are in the operational focus points below.</p>
-</div>
+  </div>
+</section>
 
-<!-- ===== Cancellations & no-shows (standard from Week 37) ===== -->
-<div class="section">
-  <div class="section-head">
-    <div>
-      <div class="section-eyebrow">Section 12.3 · standard from Week 37</div>
-      <h2 class="section-title">Cancellations and no-shows</h2>
+<section>
+  <div class="sec-head"><div><h2>The two camps</h2></div></div>
+  <div class="grid camps">
+    <div class="card camp">
+      <h3><span class="sw" style="background:var(--ce)"></span>Craters Edge <span class="pill watch" style="margin-left:auto">Amber</span></h3>
+      <div class="m">
+        <div><div class="lab">Sept sales</div><div class="v n">$343,639</div><div class="c">Budget $610,605 · <span class="bad">−43.7%</span></div></div>
+        <div><div class="lab">vs last year, 1–27 Sept</div><div class="v n good">+27.4%</div><div class="c">Year to date <span class="good">+3.0%</span></div></div>
+        <div><div class="lab">Sept occupancy</div><div class="v n">47.3%</div><div class="c">Budget 65.6% · last year 47.2%</div></div>
+        <div><div class="lab">Average room rate</div><div class="v n">$1,518</div><div class="c">Budget $1,816 · <span class="bad">−16.4%</span></div></div>
+      </div>
+      <p>Trading ahead of last year at the same occupancy, but the rate fell to $1,390 in days 18–27 and October provisional holds dropped 74%. Diesel stock unknown since 700 L on 21 Sept. Water supply still intermittent. No weekly report or guest feedback this week.</p>
+    </div>
+    <div class="card camp">
+      <h3><span class="sw" style="background:var(--wr)"></span>Warangi Ridge <span class="pill bad" style="margin-left:auto">Red</span></h3>
+      <div class="m">
+        <div><div class="lab">Sept sales</div><div class="v n">$53,541</div><div class="c">Budget $445,446 · <span class="bad">−88.0%</span></div></div>
+        <div><div class="lab">Month-end forecast</div><div class="v n">$59,490</div><div class="c">Budget $494,940 · run-rate</div></div>
+        <div><div class="lab">Sept occupancy</div><div class="v n">9.4%</div><div class="c">Budget 55.6%</div></div>
+        <div><div class="lab">Guest nights, week</div><div class="v n good">36</div><div class="c">18.4% · 6 complimentary</div></div>
+      </div>
+      <p>Occupancy rose for a second week and two large groups left very happy, with 14 guests forecast for the next 10 days. But the nights were sold at $1,023 against a $1,827 budget rate, and 6 were complimentary. Staffing rose again. T460 EMC still off the road; diesel covers about a week. No manager recorded on site on 30 Sept. No recovery plan received.</p>
     </div>
   </div>
+</section>
+
+<section>
+  <div class="sec-head"><div><h2>Trend</h2><p>Where September lands, and how Craters Edge compares with last year</p></div></div>
+  <div class="grid charts">
+    <div class="card chart"><h3>September sales vs budget</h3><div class="cap">To 27 Sept, with run-rate month-end forecast</div><div class="cw"><canvas id="cMtd" role="img" aria-label="September sales versus budget by camp"></canvas></div></div>
+    <div class="card chart"><h3>Weekly occupancy</h3><div class="cap">From camp weekly reports; dashed is the forecast made a week earlier; no CE report for Wk39</div><div class="cw"><canvas id="cOcc" role="img" aria-label="Weekly occupancy by camp"></canvas></div></div>
+    <div class="card chart"><h3>Craters Edge sales by month</h3><div class="cap">2026 vs 2025 vs budget · Sept to the 27th · excl. permit income</div><div class="cw"><canvas id="cMonth" role="img" aria-label="Craters Edge monthly sales 2026 versus 2025 versus budget"></canvas></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div><h2>Craters Edge against last year</h2><p>Month-end tabs of the DSR workbook to August; September and year to date from the 27 Sept DSR; both years exclude park permit income</p></div></div>
+  <div class="card" style="padding:6px 8px 10px">
   <div class="scroll-x">
-  <table class="fin">
+  <table class="tbl wide">
+    <thead><tr><th>Month</th><th>Sales 2026</th><th>Sales 2025</th><th>vs last year</th><th>Occupancy 26 / 25</th><th>vs budget</th></tr></thead>
+    <tbody>
+<tr><td>Jan</td><td class="n">$212,081</td><td class="n">$115,282</td><td class="n good">+84.0%</td><td class="n">27.5% / 27.5%</td><td class="n bad">−10.7%</td></tr>
+<tr><td>Feb</td><td class="n">$173,093</td><td class="n">$188,483</td><td class="n bad">−8.2%</td><td class="n">23.7% / 37.4%</td><td class="n bad">−57.3%</td></tr>
+<tr><td>Mar</td><td class="n">$51,237</td><td class="n">$54,729</td><td class="n bad">−6.4%</td><td class="n">9.7% / 16.1%</td><td class="n bad">−64.3%</td></tr>
+<tr><td>Apr</td><td class="n">$18,821</td><td class="n">$42,977</td><td class="n bad">−56.2%</td><td class="n">3.3% / 13.1%</td><td class="n bad">−82.6%</td></tr>
+<tr><td>May</td><td class="n">$73,037</td><td class="n">$129,958</td><td class="n bad">−43.8%</td><td class="n">14.6% / 37.0%</td><td class="n bad">−67.7%</td></tr>
+<tr><td>Jun</td><td class="n">$335,903</td><td class="n">$293,995</td><td class="n good">+14.3%</td><td class="n">38.2% / 45.6%</td><td class="n bad">−46.3%</td></tr>
+<tr><td>Jul</td><td class="n">$497,009</td><td class="n">$530,540</td><td class="n bad">−6.3%</td><td class="n">56.5% / 73.5%</td><td class="n bad">−48.9%</td></tr>
+<tr><td>Aug</td><td class="n">$500,698</td><td class="n">$509,398</td><td class="n bad">−1.7%</td><td class="n">55.8% / 69.0%</td><td class="n bad">−45.5%</td></tr>
+<tr><td>Sep 1–27</td><td class="n">$343,639</td><td class="n">$269,830</td><td class="n good">+27.4%</td><td class="n">47.3% / 47.2%</td><td class="n bad">−43.7%</td></tr>
+<tr class="tot"><td>YTD to 27 Sept</td><td class="n">$2,199,007</td><td class="n">$2,135,190</td><td class="n good">+3.0%</td><td class="n">30.7% / 41.3%</td><td class="n bad">−48.0%</td></tr>
+    </tbody>
+  </table>
+  </div>
+  </div>
+  <p class="insight"><b>What it shows:</b> Craters Edge is level with last year rather than growing. Sales are 3.0% up year to date, but with two extra rooms, sales per available room are 9.1% down; it sells 15.8% fewer room nights at a 25.5% higher rate. September is the strongest month against 2025, at the same occupancy and a 14.1% higher rate. The budget assumes about twice last year's sales, which is most of the gap to budget.</p>
+  <p class="note">The camp had 15 rooms until September 2025 and 17 from October 2025. The DSR's own last-year columns are populated again this week and match the workbook. The DSR's "Actual YTD" rooms-available cell shows 924 (printing 152% occupancy); 30.7% uses the budget column's 4,590.</p>
+</section>
+
+<section>
+  <div class="sec-head"><div><h2>Top five risks</h2><p>The full list of 18 is under Detail below</p></div></div>
+  <div class="card" style="padding:6px 8px 10px">
+  <div class="scroll-x">
+  <table class="tbl wide">
+    <thead><tr><th>Risk</th><th class="l">Why it matters</th><th class="l">Owner</th><th class="l">Due</th></tr></thead>
+    <tbody>
+      <tr><td class="l"><b>Cash headroom</b> down to $62,769; BOB $7,233 left</td><td class="l">At this cycle's pace it passes $50k within about 3 days of 27 Sept</td><td class="l">Finance</td><td class="l bad"><b>Next report</b></td></tr>
+      <tr><td class="l"><b>Warangi Ridge</b> −88.0% to budget, no recovery plan</td><td class="l">Month-end forecast about $59k against a $495k budget</td><td class="l">Camp GM / Sales</td><td class="l bad"><b>Overdue</b></td></tr>
+      <tr><td class="l"><b>No deposit on any lost booking</b>: 71 on file, $151,864</td><td class="l">Forward book overstates demand at both camps</td><td class="l">Owner / GM / Sales</td><td class="l bad"><b>Overdue</b></td></tr>
+      <tr><td class="l"><b>No Craters Edge weekly report</b>; its diesel status unknown</td><td class="l">No view of CE fuel, guests, vehicles or forward occupancy</td><td class="l">CE Camp Manager</td><td class="l bad"><b>Immediate</b></td></tr>
+      <tr><td class="l"><b>October pipeline</b> down 9.7% (CE) and 9.3% (WR)</td><td class="l">CE October provisional holds fell 74%</td><td class="l">Reservations / Sales</td><td class="l">Next report</td></tr>
+    </tbody>
+  </table>
+  </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div><h2>Detail</h2><p>Operational detail for reference; tap a heading to open</p></div></div>
+
+  <details><summary><span>All operational focus points <small>18 items</small></span></summary><div class="inner"><div class="scroll-x">
+    <table class="tbl wide"><thead><tr><th class="l">Level</th><th class="l">Issue</th><th class="l">Impact</th><th class="l">Responsible</th><th class="l">Target</th></tr></thead><tbody>
+<tr><td class="l"><span class="pill bad">Critical</span></td><td class="l"><b>Cash headroom down 39.0% to $62,769</b>; BOB 96.4% drawn ($7,233 left); $20,000 of BOI overdraft funded a TZS 50M HO cash withdrawal; $9,412 "F&amp;F Robin" from BOB</td><td class="l">Passes $50k within about 3 days at this pace</td><td class="l">Finance</td><td class="l">Next report</td></tr>
+<tr><td class="l"><span class="pill bad">Critical</span></td><td class="l"><b>WR trading, no recovery plan</b> (third week): MTD −88.0%; days 18–27 rate $1,023 against $1,827 budget</td><td class="l">Forecast about $59k vs $495k; YTD gap $2.06M</td><td class="l">Camp GM / Sales</td><td class="l">Overdue</td></tr>
+<tr><td class="l"><span class="pill bad">Critical</span></td><td class="l"><b>No deposit rule</b>: 20 more lost reservations, none with a deposit; 71 on file ($151,864)</td><td class="l">Forward book overstates demand</td><td class="l">Owner / GM / Sales</td><td class="l">Overdue</td></tr>
+<tr><td class="l"><span class="pill bad">Critical</span></td><td class="l"><b>No Craters Edge weekly report</b> this week (WR report received 28 Sept)</td><td class="l">No view of CE guests, fuel, generators, vehicles, forward occupancy</td><td class="l">CE Camp Manager</td><td class="l">Immediate</td></tr>
+<tr><td class="l"><span class="pill watch">High</span></td><td class="l"><b>CE diesel</b>: 700 L on 21 Sept, about 800 L a week used, no purchase recorded since 5 Sept</td><td class="l">Generator fuel risk</td><td class="l">Camp Manager / Purchasing</td><td class="l">Immediate</td></tr>
+<tr><td class="l"><span class="pill watch">High</span></td><td class="l"><b>WR management cover</b>: no manager recorded on site on 30 Sept</td><td class="l">Operational and safety risk</td><td class="l">Camp GM / HRM</td><td class="l">Immediate</td></tr>
+<tr><td class="l"><span class="pill watch">High</span></td><td class="l"><b>October pipeline</b> down 9.7% (CE) and 9.3% (WR); CE October provisional down 74.3%</td><td class="l">October sales at risk</td><td class="l">Reservations / Sales</td><td class="l">Next report</td></tr>
+<tr><td class="l"><span class="pill watch">High</span></td><td class="l"><b>CE rate</b>: MTD $1,518, no rise since Day 6; $1,390 in days 18–27</td><td class="l">Less revenue per room at the same occupancy</td><td class="l">GM / Reservations</td><td class="l">Next report</td></tr>
+<tr><td class="l"><span class="pill watch">High</span></td><td class="l"><b>September re-forecast not received</b> (third week); CE −43.7%, WR −88.0%</td><td class="l">Month-end result will not meet budget</td><td class="l">GM / Finance</td><td class="l">Overdue</td></tr>
+<tr><td class="l"><span class="pill watch">High</span></td><td class="l"><b>YTD gap widened $234,817 in 10 days</b> to $4.09M; CE YTD per available room −9.1% vs LY</td><td class="l">Budget assumes about 2× last year</td><td class="l">Finance / Ownership</td><td class="l">Next budget review</td></tr>
+<tr><td class="l"><span class="pill watch">High</span></td><td class="l"><b>WR staffing</b>: present days +10.1% to 283, days off −43.8%; 7.9 staff days per guest night (CE 2.5); payroll not supplied</td><td class="l">Payroll well ahead of revenue</td><td class="l">Camp GM / HRM / Finance</td><td class="l">Next report</td></tr>
+<tr><td class="l"><span class="pill watch">High</span></td><td class="l"><b>Debtors up 55.4% to $34,736</b>; Takims Holiday $19,635 (56.5%), third week</td><td class="l">Cash timing risk</td><td class="l">Accounts</td><td class="l">Next report</td></tr>
+<tr><td class="l"><span class="pill muted">Watch</span></td><td class="l"><b>Creditors</b>: TSM Electricals TZS 12.98M at 61–90 days, third report; "Net Amount" TZS 63.1M above the grand total</td><td class="l">Supplier risk; balance may be understated</td><td class="l">Accounts</td><td class="l">Next report</td></tr>
+<tr><td class="l"><span class="pill muted">Watch</span></td><td class="l"><b>CE water supply</b> still intermittent; sewage pumping due 28 Sept, not confirmed</td><td class="l">Guest experience and hygiene</td><td class="l">Camp Manager / Chief Engineer</td><td class="l">Next report</td></tr>
+<tr><td class="l"><span class="pill muted">Watch</span></td><td class="l"><b>WR vehicles</b>: T460 EMC not running, radio water-damaged; oil services for 3 vehicles not booked; washing machine damaged in transit</td><td class="l">Vehicle availability; unplanned costs</td><td class="l">Maintenance / Purchasing</td><td class="l">Next report</td></tr>
+<tr><td class="l"><span class="pill muted">Watch</span></td><td class="l"><b>Health &amp; safety</b>: fire-safety gaps at both camps (fourth week); WR spa fire report not supplied; WR railings pending</td><td class="l">Compliance and guest safety</td><td class="l">HRM / H&amp;S lead</td><td class="l">Next report</td></tr>
+<tr><td class="l"><span class="pill watch">High</span></td><td class="l"><b>WR complimentary nights</b>: 6 of 36 guest nights complimentary, 0 on the DSR; occupancy method still does not reconcile</td><td class="l">Revenue per night overstated or comps unposted</td><td class="l">Camp GM / Reservations</td><td class="l">Next report</td></tr>
+<tr><td class="l"><span class="pill muted">Watch</span></td><td class="l"><b>Group and permit costs</b> (TZS 19.7M Jyothi x11; TZS 5.78M GP permits 27 Sept): recharge not confirmed</td><td class="l">Margin on group business</td><td class="l">Finance / Reservations</td><td class="l">Next report</td></tr>
+    </tbody></table></div></div></details>
+
+  <details><summary><span>Bookings movement and items resolved this cycle</span></summary><div class="inner"><div class="scroll-x">
+    <table class="tbl">
+      <thead><tr><th>Pipeline (prov. + confirmed)</th><th>Wk38</th><th>Wk39</th><th>%</th></tr></thead>
+      <tbody>
+        <tr><td>CE September</td><td class="n">$488,296</td><td class="n">$480,266</td><td class="n">−1.6%</td></tr>
+        <tr><td>CE October</td><td class="n">$313,657</td><td class="n">$283,077</td><td class="n bad">−9.7%</td></tr>
+        <tr><td>CE November</td><td class="n">$106,133</td><td class="n">$118,968</td><td class="n good">+12.1%</td></tr>
+        <tr><td>WR September</td><td class="n">$82,873</td><td class="n">$82,873</td><td class="n">0.0%</td></tr>
+        <tr><td>WR October</td><td class="n">$101,594</td><td class="n">$92,179</td><td class="n bad">−9.3%</td></tr>
+        <tr><td>WR November</td><td class="n">$100,719</td><td class="n">$115,819</td><td class="n good">+15.0%</td></tr>
+        <tr class="tot"><td>Both, three months</td><td class="n">$1,193,272</td><td class="n">$1,173,181</td><td class="n">−1.7%</td></tr>
+      </tbody>
+    </table></div>
+    <div class="scroll-x" style="margin-top:12px">
+    <table class="tbl">
+        <thead><tr><th>Confirmed incl. VAT (DSR)</th><th>17 Sept</th><th>27 Sept</th><th>Movement</th><th>%</th></tr></thead>
+        <tbody>
+          <tr><td>Craters Edge, 2026</td><td class="n">$3,334,425</td><td class="n">$3,406,275</td><td class="n good">+$71,850</td><td class="n">+2.2%</td></tr>
+          <tr><td>Craters Edge, 2027</td><td class="n">$1,312,307</td><td class="n">$1,411,471</td><td class="n good">+$99,164</td><td class="n">+7.6%</td></tr>
+          <tr><td>Warangi Ridge, 2026</td><td class="n">$880,736</td><td class="n">$878,506</td><td class="n">−$2,230</td><td class="n">−0.3%</td></tr>
+          <tr><td>Warangi Ridge, 2027</td><td class="n">$203,702</td><td class="n">$203,702</td><td class="n">$0</td><td class="n">0.0%</td></tr>
+        </tbody>
+      </table></div><p class="note">The Week 38 pipeline column (19 Sept) was received this cycle: WR September confirmed fell $15,085 that week, about a third of the $46,176 DSR fall; the rest is unexplained. Pipeline September totals do not reconcile with DSR sales, so Finance to confirm the basis. Sales activity: one new opportunity, Mashina Safaris, 18 guests from 29 Dec ($43,290), held at Warangi Ridge because Craters Edge is full.</p>
+    <h3 style="margin-top:16px;font-size:16px;font-family:'IBM Plex Sans',sans-serif">Resolved this cycle</h3><ul><li><b>DSR last-year columns</b>: populated again for both camps; Craters Edge's match the workbook.</li><li><b>Week 38 pipeline gap</b>: the 19 Sept column arrived with this week's report.</li><li><b>Budget for 1–3 Sept</b>: the DSR now uses $22,615 a day for every September day.</li><li><b>CE scullery interns</b>: now recorded as present for the whole month.</li><li><b>WR ice machines</b>: both repaired, solenoid valves fitted 23 Sept; the weekly report confirms all working.</li><li><b>WR weekly report</b>: received for 21–28 Sept.</li><li><b>T340 EMK fridge</b>: working again.</li></ul></div></details>
+
+  <details><summary><span>Actions completed in Week 39 <small>18 items · CE 5 · WR 13</small></span></summary><div class="inner"><div class="scroll-x">
+    <table class="tbl">
+    <thead><tr><th>Camp</th><th class="l">Action</th><th class="l">Area</th><th>Completed</th><th class="l">Commentary</th></tr></thead>
+    <tbody>
+<tr><td>CE</td><td class="l">Murram for stores area</td><td class="l">General</td><td class="n">26 Sept</td><td class="l">Done</td></tr>
+<tr><td>CE</td><td class="l">Long-handle window squeegee</td><td class="l">Equipment</td><td class="n">27 Sept</td><td class="l">Received</td></tr>
+<tr><td>CE</td><td class="l">Tent 12 toilet seat</td><td class="l">Guest rooms</td><td class="n">22 Sept</td><td class="l"><b>Follow-up:</b> at HO, fitting not recorded</td></tr>
+<tr><td>CE</td><td class="l">Kitchen staff shoes</td><td class="l">Main kitchen</td><td class="n">26 Sept</td><td class="l">Sent to both camps</td></tr>
+<tr><td>CE</td><td class="l">Sewage tanks pumped</td><td class="l">Health &amp; safety</td><td class="n">27–28 Sept</td><td class="l"><b>Follow-up:</b> "to be finished", not confirmed</td></tr>
+<tr><td>WR</td><td class="l">Ice machine to RO connection</td><td class="l">Main kitchen</td><td class="n">26 Sept</td><td class="l"><b>Follow-up:</b> material arrived, connection not recorded</td></tr>
+<tr><td>WR</td><td class="l">Pool filter lids</td><td class="l">Pool area</td><td class="n">26 Sept</td><td class="l"><b>Follow-up:</b> pool covers not addressed</td></tr>
+<tr><td>WR</td><td class="l">Vehicle battery charger</td><td class="l">Vehicles</td><td class="n">26 Sept</td><td class="l">Received</td></tr>
+<tr><td>WR</td><td class="l">Hardware and tools</td><td class="l">Building works</td><td class="n">26 Sept</td><td class="l">Received</td></tr>
+<tr><td>WR</td><td class="l">Signage board materials</td><td class="l">Concession</td><td class="n">26 Sept</td><td class="l">Received</td></tr>
+<tr><td>WR</td><td class="l">Window squeegees x5</td><td class="l">Equipment</td><td class="n">26 Sept</td><td class="l">Received</td></tr>
+<tr><td>WR</td><td class="l">Plumbing and RO materials</td><td class="l">Maintenance</td><td class="n">24 Sept</td><td class="l"><b>Follow-up:</b> receipt not recorded</td></tr>
+<tr><td>WR</td><td class="l">Bolts and nuts</td><td class="l">Vehicles</td><td class="n">22 Sept</td><td class="l"><b>Follow-up:</b> receipt not recorded</td></tr>
+<tr><td>WR</td><td class="l">Both ice machines repaired</td><td class="l">Main kitchen</td><td class="n">23 Sept</td><td class="l">Solenoids fitted</td></tr>
+<tr><td>WR</td><td class="l">Kitchen staff shoes</td><td class="l">Main kitchen</td><td class="n">26 Sept</td><td class="l">Received</td></tr>
+<tr><td>WR</td><td class="l">Pool non-return valve</td><td class="l">Pool plant</td><td class="n">26 Sept</td><td class="l"><b>Follow-up:</b> fitting not recorded</td></tr>
+<tr><td>WR</td><td class="l">Maintenance materials</td><td class="l">Maintenance</td><td class="n">26 Sept</td><td class="l">Received</td></tr>
+<tr><td>WR</td><td class="l">Roller compactor oil</td><td class="l">Maintenance</td><td class="n">28 Sept</td><td class="l"><b>Follow-up:</b> sent, arrival not recorded</td></tr>
+    </tbody>
+  </table></div><p class="note">Only items marked "Complete" in the Action Plan workbooks with a completion date inside 22–28 September are shown. Excluded for lack of an in-week date, with conflicting notes: CE generators serviced, head chef email IDs, WR drainage pipes, WR pool chemicals, and a WR generator row raised on 27 Sept as "well overdue".</p></div></details>
+
+  <details><summary><span>Cancellations and no-shows</span></summary><div class="inner"><div class="scroll-x">
+    <table class="tbl">
     <thead>
-      <tr><th>Camp</th><th class="l">Arrival window</th><th>Reservations</th><th>No-shows</th><th>Cancelled</th><th>Value</th><th class="l">&nbsp;&nbsp;Main reason</th></tr>
+      <tr><th>Camp</th><th class="l">Arrival window</th><th>Reservations</th><th>No-shows</th><th>Cancelled</th><th>Value</th><th class="l">Main reason</th></tr>
     </thead>
     <tbody>
-      <tr><td>CE</td><td class="l">14 Sept (Week 37 date)</td><td class="num">5</td><td class="num">0</td><td class="num">5</td><td class="num">$9,034</td><td class="l">&nbsp;&nbsp;Non-guaranteed hold, $0 deposit (5 of 5)</td></tr>
-      <tr><td>CE</td><td class="l">15–20 Sept</td><td class="num">33</td><td class="num">1</td><td class="num">32</td><td class="num">$59,653</td><td class="l">&nbsp;&nbsp;Non-guaranteed 31, "No Details" 1, no-show 1; all $0 deposit</td></tr>
-      <tr><td>WR</td><td class="l">14–20 Sept</td><td class="num">4</td><td class="num">0</td><td class="num">4</td><td class="num">$13,510</td><td class="l">&nbsp;&nbsp;Same report as Week 37; nothing new</td></tr>
-      <tr><td class="grp-label">Both</td><td class="l grp-label">Cumulative on file</td><td class="num grp-label">51</td><td class="num grp-label">1</td><td class="num grp-label">50</td><td class="num neg">$112,664</td><td class="l">&nbsp;&nbsp;WR 13 ($43,978), CE 38 ($68,687); none with a deposit</td></tr>
+      <tr><td>CE</td><td class="l">21 Sept (Week 38 date)</td><td class="n">3</td><td class="n">0</td><td class="n">3</td><td class="n">$7,245</td><td class="l">Non-guaranteed hold, $0 deposit</td></tr>
+      <tr><td>CE</td><td class="l">22–26 Sept</td><td class="n">14</td><td class="n">0</td><td class="n">14</td><td class="n">$26,180</td><td class="l">Non-guaranteed hold, $0 deposit (test record excluded)</td></tr>
+      <tr><td>WR</td><td class="l">21 Sept (Week 38 date)</td><td class="n">1</td><td class="n">0</td><td class="n">1</td><td class="n">$1,225</td><td class="l">Non-guaranteed hold, $0 deposit</td></tr>
+      <tr><td>WR</td><td class="l">22–26 Sept</td><td class="n">2</td><td class="n">0</td><td class="n">2</td><td class="n">$4,550</td><td class="l">Non-guaranteed hold, $0 deposit</td></tr>
+      <tr><td class="strong">Both</td><td class="l strong">Cumulative on file</td><td class="n strong">71</td><td class="n strong">1</td><td class="n strong">70</td><td class="n bad">$151,864</td><td class="l">CE 55 ($102,112), WR 16 ($49,753); none with a deposit</td></tr>
     </tbody>
-  </table>
-  </div>
-  <p class="note-sm">Only two Craters Edge losses happened in Week 38 itself: a <b>2-room no-show</b> (Unique Safaris, $3,920, no deposit) and one arrival-day cancellation (A&amp;K, $1,960). The other 36 were released weeks or months earlier; 17 share the date 29 April 2026. Cheli &amp; Peacock (9 holds, $18,442) and Ranger Safari (5, $11,471) now appear at both camps. The WR report does not explain the −$46,176 fall in confirmed bookings. Value is room-rate lines, not money lost.</p>
-</div>
+  </table></div><p class="note">Only two losses happened in Week 39 itself: two Craters Edge reservations cancelled on the arrival day, 25 Sept (Easy Travel and A&amp;K, $3,920). The other 18 were released months earlier; 10 Craters Edge holds share the date 4 May 2026. A "Mr. TEST" booking ($2,867) was found in the live system and excluded. Cheli &amp; Peacock (10 holds, $21,309) and Ranger Safari (7, $14,516) lead the list. Value is room-rate lines, not money lost.</p></div></details>
 
-<!-- ===== People on leave (standard from Week 37) ===== -->
-<div class="section">
-  <div class="two-col">
-    <div>
-      <div class="section-head">
-        <div>
-          <div class="section-eyebrow">Section 11.2 · standard from Week 37</div>
-          <h2 class="section-title">Staff on leave, Week 38 (15–21 Sept)</h2>
-        </div>
-      </div>
-      <div class="scroll-x">
-      <table class="fin">
+  <details><summary><span>Staff on leave and attendance</span></summary><div class="inner"><div class="scroll-x">
+    <table class="tbl">
         <thead><tr><th>Camp</th><th class="l">Name</th><th class="l">Role</th><th class="l">Leave</th><th>Days</th><th>Dates</th></tr></thead>
         <tbody>
-          <tr><td>CE</td><td class="l">Sarah Exaud Nassari</td><td class="l">Housekeeping</td><td class="l"><span class="pill-mini pm-ml">Maternity</span></td><td class="num">7</td><td class="num">15–21</td></tr>
-          <tr><td>CE</td><td class="l">Yultiansian Gandu</td><td class="l">Masseuse</td><td class="l"><span class="pill-mini pm-al">Annual</span></td><td class="num">7</td><td class="num">15–21</td></tr>
-          <tr><td>WR</td><td class="l">Praygod Thomas Mosha</td><td class="l">Maintenance</td><td class="l"><span class="pill-mini pm-al">Annual</span></td><td class="num">7</td><td class="num">15–21</td></tr>
-          <tr><td>WR</td><td class="l">Charles Francis Nandi</td><td class="l">Asst Camp Manager</td><td class="l"><span class="pill-mini pm-al">Annual</span></td><td class="num">3</td><td class="num">19–21</td></tr>
+          <tr><td>CE</td><td class="l">Sarah Exaud Nassari</td><td class="l">Housekeeping</td><td class="l"><span class="pill muted">Maternity</span></td><td class="n">7</td><td class="n">22–28</td></tr>
+          <tr><td>CE</td><td class="l">Yultiansian Gandu</td><td class="l">Masseuse</td><td class="l"><span class="pill watch">Annual</span></td><td class="n">7</td><td class="n">22–28</td></tr>
+          <tr><td>CE</td><td class="l">Adolf Heaven Shange</td><td class="l">Waiter</td><td class="l"><span class="pill watch">Annual</span></td><td class="n">2</td><td class="n">27–28</td></tr>
+          <tr><td>WR</td><td class="l">Charles Francis Nandi</td><td class="l">Asst Camp Manager</td><td class="l"><span class="pill watch">Annual</span></td><td class="n">7</td><td class="n">22–28</td></tr>
+          <tr><td>WR</td><td class="l">Praygod Thomas Mosha</td><td class="l">Maintenance</td><td class="l"><span class="pill watch">Annual</span></td><td class="n">7</td><td class="n">22–28</td></tr>
+          <tr><td>HO</td><td class="l">Josephine Oosterhuis</td><td class="l">Sales Manager</td><td class="l"><span class="pill watch">Annual</span></td><td class="n">6</td><td class="n">22–27</td></tr>
         </tbody>
-      </table>
-      </div>
-      <p class="note-sm">No sick leave at either camp this week. Suzana Kiharata (CE), sick to 13 Sept, is rostered off to 29 Sept. Charles Francis Nandi is on annual leave to 30 Sept and has not been present in September. CE's Assistant Manager Victor Kimambo and Head Chef Leonard Chogo are rostered off for the rest of the month. The two CE scullery interns have no entries from 15 Sept.</p>
-    </div>
-    <div>
-      <div class="section-head">
-        <div>
-          <div class="section-eyebrow">Section 11.1</div>
-          <h2 class="section-title">Attendance vs demand</h2>
-        </div>
-      </div>
-      <table class="fin">
-        <thead><tr><th>Person-days</th><th>CE Wk37</th><th>CE Wk38</th><th>WR Wk37</th><th>WR Wk38</th></tr></thead>
+      </table></div><p class="note">No sick leave at any location. Suzana Kiharata (CE) has not been present at any point in September. On 30 Sept the WR register shows the Camp Manager travelling, one Assistant Camp Manager on leave and the other blank, so no manager is recorded on site.</p><div class="scroll-x" style="margin-top:14px">
+    <table class="tbl">
+        <thead><tr><th>Person-days</th><th>CE Wk38</th><th>CE Wk39</th><th>WR Wk38</th><th>WR Wk39</th><th>HO Wk38</th><th>HO Wk39</th></tr></thead>
         <tbody>
-          <tr><td>Present</td><td class="num">236</td><td class="num">233</td><td class="num">229</td><td class="num neg">256</td></tr>
-          <tr><td>Days off</td><td class="num">56</td><td class="num">61</td><td class="num">91</td><td class="num">74</td></tr>
-          <tr><td>Leave, all types</td><td class="num">28</td><td class="num">14</td><td class="num">13</td><td class="num">10</td></tr>
-          <tr><td>Guest bed-nights</td><td class="num">126</td><td class="num">98</td><td class="num">4</td><td class="num">22</td></tr>
-          <tr><td class="grp-label">Present days per bed-night</td><td class="num">1.9</td><td class="num">2.4</td><td class="num">57.3</td><td class="num pos">11.6</td></tr>
+          <tr><td>Present</td><td class="n">247</td><td class="n">232</td><td class="n">257</td><td class="n bad">283</td><td class="n">70</td><td class="n">67</td></tr>
+          <tr><td>Days off</td><td class="n">61</td><td class="n">81</td><td class="n">73</td><td class="n bad">41</td><td class="n">12</td><td class="n">11</td></tr>
+          <tr><td>Leave, all types</td><td class="n">14</td><td class="n">16</td><td class="n">10</td><td class="n">14</td><td class="n">2</td><td class="n">6</td></tr>
+          <tr><td>Rooms sold per day (DSR)</td><td class="n">7.8</td><td class="n">8.2</td><td class="n">0.0</td><td class="n">2.8</td><td class="n">n/a</td><td class="n">n/a</td></tr>
+          <tr><td class="strong">Staff present per room sold</td><td class="n">4.6</td><td class="n good">4.0</td><td class="n">n/a</td><td class="n bad">14.4</td><td class="n">n/a</td><td class="n">n/a</td></tr>
+          <tr><td>Guest nights (weekly report)</td><td class="n">98</td><td class="n">n/a</td><td class="n">22</td><td class="n">36</td><td class="n">n/a</td><td class="n">n/a</td></tr>
+          <tr><td class="strong">Staff days per guest night</td><td class="n">2.5</td><td class="n">n/a</td><td class="n">11.7</td><td class="n good">7.9</td><td class="n">n/a</td><td class="n">n/a</td></tr>
         </tbody>
-      </table>
-      <p class="note-sm">Warangi Ridge's ratio improved because guests arrived, but present days rose 11.8% in a week with guests on only 2 of 7 days. Head Office attendance and payroll cost were not received (third cycle for payroll).</p>
-    </div>
-  </div>
-</div>
+      </table></div><p class="note">Week 38 is restated from the revised register (CE present 247, not 233). Warangi Ridge's guest-night ratio comes from its weekly report (21–28 Sept); Craters Edge's cannot be calculated without its report, so the DSR room proxy is shown for both. Payroll cost was not received (fourth cycle).</p></div></details>
 
-<!-- ===== Red flags ===== -->
-<div class="section">
-  <div class="section-head">
-    <div>
-      <div class="section-eyebrow">Section 14</div>
-      <h2 class="section-title">Operational focus points</h2>
-    </div>
-  </div>
-  <div class="flags">
-    <div class="flags-head">
-      <div></div><div>Issue</div><div>Impact</div><div>Responsible</div><div style="text-align:right">Target</div>
-    </div>
-    <div class="flag-row sev-critical">
-      <div class="flag-bar"></div>
-      <div class="flag-issue"><b>WR revenue still near zero</b>: $0 sold in days 14–17 vs $65,992 budget; MTD −93.3%, worse at three consecutive DSRs; no recovery plan or deposit rule received</div>
-      <div class="flag-impact">Run-rate $33,095 vs $494,940 budget; October holds ($19,040) unprotected</div>
-      <div class="flag-resp">Camp GM / Sales</div>
-      <div class="flag-date">Overdue</div>
-    </div>
-    <div class="flag-row sev-critical">
-      <div class="flag-bar"></div>
-      <div class="flag-issue"><b>Overdraft headroom touched $50,113</b> at the start of 17 Sept (drawn $549,887) before $52,792 of receipts; closed at $102,905. BOB facility 91.7% drawn; TZS 128.1M paid out in one day</div>
-      <div class="flag-impact">Last week's $50k threshold reached intra-week</div>
-      <div class="flag-resp">Finance</div>
-      <div class="flag-date">Next report</div>
-    </div>
-    <div class="flag-row sev-high">
-      <div class="flag-bar"></div>
-      <div class="flag-issue"><b>WR confirmed 2026 bookings down $46,176</b> (−5.0%) in four days; WR cancellation report has nothing new; no pipeline report</div>
-      <div class="flag-impact">Loss of confirmed, not provisional, business if cancellations</div>
-      <div class="flag-resp">Reservations / Finance</div>
-      <div class="flag-date">Next report</div>
-    </div>
-    <div class="flag-row sev-high">
-      <div class="flag-bar"></div>
-      <div class="flag-issue"><b>CE holds with no deposit</b>: all 38 reservations lost for 14–20 Sept arrivals ($68,687); one 2-room no-show uncharged unless confirmed</div>
-      <div class="flag-impact">Deposit gap applies to both camps</div>
-      <div class="flag-resp">Reservations / Sales</div>
-      <div class="flag-date">Next report</div>
-    </div>
-    <div class="flag-row sev-high">
-      <div class="flag-bar"></div>
-      <div class="flag-issue"><b>CE diesel</b>: 8.2 L per bed-night (+33.2%); 700 L in storage, less than one week's use; none bought for two weeks</div>
-      <div class="flag-impact">Risk of power loss if delivery slips</div>
-      <div class="flag-resp">Camp Manager / Purchasing</div>
-      <div class="flag-date">Immediate</div>
-    </div>
-    <div class="flag-row sev-high">
-      <div class="flag-bar"></div>
-      <div class="flag-issue"><b>WR cost base not matched to demand</b>: present days up 11.8% to 256 with guests on 2 of 7 days; payroll not supplied (third cycle)</div>
-      <div class="flag-impact">Payroll and fixed costs running ahead of revenue</div>
-      <div class="flag-resp">Camp GM / HRM / Finance</div>
-      <div class="flag-date">Next report</div>
-    </div>
-    <div class="flag-row sev-high">
-      <div class="flag-bar"></div>
-      <div class="flag-issue"><b>Both camps materially behind September budget</b>: CE −42.2%, WR −93.3%; combined run-rate $425,059 vs $1,173,390; re-forecast not received</div>
-      <div class="flag-impact">Month-end result will not meet budget</div>
-      <div class="flag-resp">GM / Finance</div>
-      <div class="flag-date">Overdue</div>
-    </div>
-    <div class="flag-row sev-high">
-      <div class="flag-bar"></div>
-      <div class="flag-issue"><b>YTD budget gap widened $106,098 in four days</b>; combined gap now $3.85M (−60.5%). CE is +1.5% vs LY YTD, but budget assumed 1.96× LY</div>
-      <div class="flag-impact">Budget-setting gap, now confirmed on matched data</div>
-      <div class="flag-resp">Finance / Ownership</div>
-      <div class="flag-date">Next budget review</div>
-    </div>
-    <div class="flag-row sev-high">
-      <div class="flag-bar"></div>
-      <div class="flag-issue"><b>Creditors over 30 days up 60.6% to TZS 52.0M</b> (31.8% of total); TSM Electricals TZS 12.98M now 61–90 days; TZS 3.67M over a year</div>
-      <div class="flag-impact">Supplier relationship / late-payment risk</div>
-      <div class="flag-resp">Accounts</div>
-      <div class="flag-date">Next report</div>
-    </div>
-    <div class="flag-row sev-watch">
-      <div class="flag-bar"></div>
-      <div class="flag-issue"><b>CE water and sewage</b>: main water line under repair with water trucked from neighbouring camps; septic tanks overflowing; neither in the weekly report</div>
-      <div class="flag-impact">Guest experience and H&amp;S exposure</div>
-      <div class="flag-resp">Camp Manager / Chief Engineer</div>
-      <div class="flag-date">Next report</div>
-    </div>
-    <div class="flag-row sev-watch">
-      <div class="flag-bar"></div>
-      <div class="flag-issue"><b>4 of 6 WR vehicles with open items</b>; oil services overdue on T460, T461 and T340; T460 parts incomplete</div>
-      <div class="flag-impact">Reduced vehicle availability with guests in house</div>
-      <div class="flag-resp">Maintenance / Purchase</div>
-      <div class="flag-date">Next report</div>
-    </div>
-    <div class="flag-row sev-watch">
-      <div class="flag-bar"></div>
-      <div class="flag-issue"><b>Health &amp; safety</b>: fire-safety gaps at both camps (third week); no WR spa office fire report (second request); WR railings and stair strips overdue with guests in house</div>
-      <div class="flag-impact">Compliance and guest-safety exposure</div>
-      <div class="flag-resp">HRM / H&amp;S lead</div>
-      <div class="flag-date">Next report</div>
-    </div>
-    <div class="flag-row sev-watch">
-      <div class="flag-bar"></div>
-      <div class="flag-issue"><b>DSR prior-year columns still blank</b>; 2025 DSRs supplied separately give a Day 13 comparison only</div>
-      <div class="flag-impact">Year-on-year view lags the report and depends on manual supply</div>
-      <div class="flag-resp">Finance / IT</div>
-      <div class="flag-date">Overdue</div>
-    </div>
-  </div>
-</div>
+  <details><summary><span>Daily sales report checks <small>8 findings</small></span></summary><div class="inner"><div class="scroll-x">
+    <table class="tbl">
+    <thead><tr><th class="l">Check</th><th class="l">Finding</th><th class="l">Effect</th></tr></thead>
+    <tbody>
+      <tr><td class="l">Last-year columns</td><td class="l">Populated again on 27 Sept; CE totals match the workbook</td><td class="l"><b>Resolved</b>; used in this report</td></tr>
+      <tr><td class="l">CE "Actual YTD" rooms available</td><td class="l">Shows 924; the budget column shows 4,590</td><td class="l">Printed YTD occupancy 152% and RevPAR $2,272 are wrong; 30.7% is correct</td></tr>
+      <tr><td class="l">WR YTD rooms available</td><td class="l">4,110, four days more than 1 Jan to 27 Sept</td><td class="l">Small; unchanged since Week 38</td></tr>
+      <tr><td class="l">WR last-year YTD rooms available</td><td class="l">405 (one month)</td><td class="l">Printed 29% LY occupancy is not valid; 2025 was WR's opening period</td></tr>
+      <tr><td class="l">Budget percentages</td><td class="l">"−56%" and "−52%" are actual as a share of budget</td><td class="l">True variances −43.7% and −48.0%</td></tr>
+      <tr><td class="l">Budget, 1–3 Sept</td><td class="l">Now $22,615 a day throughout</td><td class="l"><b>Resolved</b></td></tr>
+      <tr><td class="l">Pipeline vs DSR</td><td class="l">CE Sept pipeline $480,266 against $343,639 sold to Day 27</td><td class="l">Finance to confirm the pipeline basis</td></tr>
+      <tr><td class="l">Permit income</td><td class="l">No permit line in the 2026 DSR since 4 June; LY columns carry none</td><td class="l">Both years compared without it</td></tr>
+    </tbody>
+  </table></div></div></details>
 
-<footer>
-  <div class="foot-title">Data coverage</div>
-  This cycle incorporates: Weekly Operations Reports (CE 15–21 Sept; WR 14–21 Sept), the Daily Sales Report for 17 Sept 2026 (Day 17; "week" DSR figures are days 14–17), the Expected Receivable Report (13–19 Sept), the Creditors Ageing schedule (19 Sept), No-Show/Cancellation Reports for both camps (arrivals 14–20 Sept), both camps' Action Plan workbooks, the September staff attendance registers for Craters Edge and Warangi Ridge, and the 2025 DSRs for 6 and 13 Sept (prior-year comparison).
+  <details><summary><span>Data coverage</span></summary><div class="inner"><p class="note" style="font-size:14.5px">This cycle incorporates: the Daily Sales Report for 27 Sept 2026 (Day 27; "week" DSR figures are days 18–27, 10 days), the Creditors Ageing schedule (26 Sept), the Expected Receivable Report (20–26 Sept), the Weekly Revenue/Pipeline Report (19 and 26 Sept columns), the September Sales Activity Report, No-Show/Cancellation Reports for both camps (arrivals 21–26 Sept), both camps' Action Plan workbooks, and the September attendance registers for Craters Edge, Warangi Ridge and Head Office.
   <br><br>
-  Report compiled for Week 38, 15–21 September 2026. Percentage movements and projections are calculated as stated; where source data contained apparent errors or gaps, this is stated rather than estimated.
-</footer>
+  The Warangi Ridge Weekly Operations Report (21–28 Sept, 8 days; 21 Sept overlaps Week 38) was added on 28 Sept. Not received: the Craters Edge weekly report, so there are no Craters Edge weekly occupancy, guest feedback, fuel, generator or vehicle figures this week. Also not received: Nationality Reports, payroll and P&amp;L. Capex and Opex are excluded at the Owner's instruction.
+  <br><br>
+  Report compiled for Week 39, 22–28 September 2026. Percentage movements and projections are calculated as stated; where source data contained apparent errors or gaps, this is stated rather than estimated.</p></div></details>
+</section>
+
+<footer>Wilderness Collection · Week 39, 22–28 September 2026 · prepared by Riaan Van Der Watt. Forecasts are labelled as forecasts; where source data had errors or gaps this is stated rather than estimated.</footer>
+</div>
 
 <script>
-// ============================================================
-// 1. DATA: always runs first, no dependency on Chart.js.
-// ============================================================
-const CE = '#8AAE73';
-const WR = '#C7A15A';
-
-// WEEKLY HISTORY: the running dataset that grows each cycle.
-// Add one new object every week (see the Format Lock template).
-// Use null for any metric a camp's source documents didn't cover
-// that week: charts show a gap rather than a false zero.
-// Do not delete or edit past weeks' entries.
+// WEEKLY HISTORY: add one object per week; use null where a source did not cover the week.
 const WEEKLY_HISTORY = [
-  {
-    week: 'Wk34', label: '15–21 Aug',
-    status: null, // no full Owner Report was compiled for this week
-    ce:  { occ: 49.6, secRev: 1203, fwd: null },
-    wr:  { occ: null, secRev: null, fwd: null }
-  },
-  {
-    week: 'Wk35', label: '22–30 Aug',
-    status: null, // no full Owner Report was compiled for this week
-    ce:  { occ: null, secRev: null, fwd: null },
-    wr:  { occ: 26.66, secRev: 110, fwd: 26.7 }
-  },
-  {
-    week: 'Wk36', label: '1–8 Sept',
-    status: 'amber', // first full Owner Report cycle: status history starts here
-    ce:  { occ: 37.9, secRev: 2010, fwd: 45.3 },
-    wr:  { occ: 26.66, secRev: 343, fwd: 6.33 }
-  },
-  {
-    week: 'Wk37', label: '8–14 Sept',
-    status: 'amber', // held at amber; Warangi Ridge red on its own
-    ce:  { occ: 45.0, secRev: 1785, fwd: 35.0 },  // CE forward window reported as 7 days
-    wr:  { occ: 7.14, secRev: 350, fwd: 40.33 }   // WR as reported; DSR basis ~1.9% (see report 2.1)
-  },
-  {
-    week: 'Wk38', label: '15–21 Sept',
-    status: 'red', // moved from amber: WR recovery-plan trigger met; headroom touched $50,113
-    ce:  { occ: 35.0, secRev: 660, fwd: 43.5 },   // CE forward window 7 days
-    wr:  { occ: 40.0, secRev: 0, fwd: 53.33 }     // WR as reported (peak rooms/15); bed-night basis 11.2%
-  }
+  { week:'Wk34', label:'15–21 Aug',  status:null,    ce:{ occ:49.6, secRev:1203, fwd:null }, wr:{ occBn:null, bn:null } },
+  { week:'Wk35', label:'22–30 Aug',  status:null,    ce:{ occ:null, secRev:null, fwd:null }, wr:{ occBn:null, bn:null } },
+  { week:'Wk36', label:'1–7 Sept',   status:'amber', ce:{ occ:37.9, secRev:2010, fwd:45.3 }, wr:{ occBn:null, bn:null } },
+  { week:'Wk37', label:'8–14 Sept',  status:'amber', ce:{ occ:45.0, secRev:1785, fwd:35.0 }, wr:{ occBn:2.0,  bn:4 } },
+  { week:'Wk38', label:'15–21 Sept', status:'red',   ce:{ occ:35.0, secRev:660,  fwd:43.5 }, wr:{ occBn:11.2, bn:22 } },
+  { week:'Wk39', label:'22–28 Sept', status:'red',   ce:{ occ:null, secRev:null, fwd:null }, wr:{ occBn:18.4, bn:36 } }  // no CE weekly report; WR report 21–28 Sept
 ];
+const CE_MONTHLY = { labels:["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep*"], s26:[212081, 173093, 51237, 18821, 73037, 335903, 497009, 500698, 343639], s25:[115282, 188483, 54729, 42977, 129958, 293995, 530540, 509398, 269830], b26:[237373, 405188, 143499, 107910, 225897, 626052, 973028, 918399, 610605] };
+const MTD = { ce:[343639,610605,381821], wr:[53541,445446,59490] };
 
-// ============================================================
-// 2. DOM-ONLY RENDERING: runs regardless of whether Chart.js
-//    loaded, so a CDN hiccup never takes the whole page down.
-// ============================================================
-function renderStatusTimeline(history){
-  const el = document.getElementById('statusTimeline');
-  if (!el) return;
-  el.innerHTML = history.map(w => {
-    const cls = w.status ? w.status : '';
-    return `<div class="tl-item"><div class="tl-dot ${cls}" title="${w.week}: ${w.status || 'no report compiled'}"></div><div class="tl-label">${w.week}</div></div>`;
-  }).join('');
+(function timeline(){
+  const el=document.getElementById('timeline');
+  el.innerHTML=WEEKLY_HISTORY.map(w=>`<span><i class="tl ${w.status||''}"></i>${w.week}</span>`).join('');
+})();
+window.addEventListener('beforeprint',()=>document.querySelectorAll('details').forEach(d=>d.open=true));
+
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+const k=v=>'$'+Math.round(v/1000).toLocaleString('en-US')+'k';
+function draw(){
+  if(typeof Chart==='undefined'){document.querySelectorAll('.cw').forEach(e=>e.innerHTML='<div class="chart-fallback">Chart library did not load; the figures are in the tables on this page.</div>');return;}
+  Chart.helpers && null;
+  Chart.defaults.font.family="'IBM Plex Sans', system-ui, sans-serif"; Chart.defaults.font.size=13;
+  Chart.defaults.color=css('--text-2'); Chart.defaults.borderColor=css('--line');
+  const leg={position:'bottom',labels:{boxWidth:10,boxHeight:10,usePointStyle:true,pointStyle:'rectRounded',padding:14}};
+  const base=(fmt)=>({responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:leg},scales:{x:{grid:{display:false}},y:{beginAtZero:true,grace:'8%',ticks:{callback:fmt}}}});
+  const CE=css('--ce'),WR=css('--wr'),LY=css('--ly'),BUD=css('--budget');
+  window._c=[];
+  _c.push(new Chart(document.getElementById('cMtd'),{type:'bar',data:{labels:['Actual','Budget','Forecast'],datasets:[
+    {label:'Craters Edge',data:MTD.ce,backgroundColor:CE,borderRadius:3},
+    {label:'Warangi Ridge',data:MTD.wr,backgroundColor:WR,borderRadius:3}]},options:base(k)}));
+  const occ=base(v=>v+'%'); occ.scales.y.suggestedMax=60;
+  const labs=WEEKLY_HISTORY.map(w=>w.week);
+  _c.push(new Chart(document.getElementById('cOcc'),{type:'line',data:{labels:labs,datasets:[
+    {label:'Craters Edge',data:WEEKLY_HISTORY.map(w=>w.ce.occ),borderColor:CE,backgroundColor:CE,tension:.25,pointRadius:4,spanGaps:false},
+    {label:'CE forecast',data:WEEKLY_HISTORY.map((w,i)=>i>0?WEEKLY_HISTORY[i-1].ce.fwd:null),borderColor:CE,backgroundColor:'transparent',borderDash:[5,4],pointRadius:5,pointStyle:'circle',showLine:false},
+    {label:'Warangi Ridge',data:WEEKLY_HISTORY.map(w=>w.wr.occBn),borderColor:WR,backgroundColor:WR,tension:.25,pointRadius:4,spanGaps:false}]},options:occ}));
+  const mo=base(k);
+  _c.push(new Chart(document.getElementById('cMonth'),{data:{labels:CE_MONTHLY.labels,datasets:[
+    {type:'bar',label:'2026',data:CE_MONTHLY.s26,backgroundColor:CE,borderRadius:2,order:2},
+    {type:'bar',label:'2025',data:CE_MONTHLY.s25,backgroundColor:LY,borderRadius:2,order:3},
+    {type:'line',label:'Budget 2026',data:CE_MONTHLY.b26,borderColor:BUD,backgroundColor:BUD,borderDash:[5,4],pointRadius:2,tension:.2,order:1}]},options:mo}));
 }
-renderStatusTimeline(WEEKLY_HISTORY);
-
-function fmtUSD(v){ return '$' + Math.round(v).toLocaleString('en-US'); }
-function fmtUSDk(v){ return '$' + (v/1000).toLocaleString('en-US',{maximumFractionDigits:0}) + 'k'; }
-function fmtPct(v){ return v + '%'; }
-
-// ============================================================
-// 3. CHARTS: guarded, if Chart.js failed to load (CDN blocked,
-//    offline, ad-blocker), show a plain-text fallback per chart
-//    instead of a blank box or a page-breaking error.
-// ============================================================
-function chartsUnavailable(){
-  document.querySelectorAll('.chart-wrap').forEach(el => {
-    el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-faint);font-size:12px;text-align:center;padding:0 16px;">Chart library did not load: figures are in the tables/text on this page.</div>';
-  });
-}
-
-if (typeof Chart === 'undefined') {
-  chartsUnavailable();
-} else {
-  try {
-    Chart.defaults.font.family = "'IBM Plex Sans', sans-serif";
-    Chart.defaults.color = '#A9B3A3';
-    Chart.defaults.borderColor = 'rgba(241,236,223,0.10)';
-
-    const trendLabels = WEEKLY_HISTORY.map(w => w.week + '\n' + w.label);
-    const trendOptsBase = (yFmt) => ({
-      responsive:true, maintainAspectRatio:false,
-      interaction:{mode:'index', intersect:false},
-      plugins:{
-        legend:{ position:'bottom', labels:{ boxWidth:9, boxHeight:9, usePointStyle:true, pointStyle:'circle', padding:14, font:{size:11} } },
-        tooltip:{ backgroundColor:'#1C2921', borderColor:'rgba(241,236,223,0.2)', borderWidth:1, titleColor:'#F3EFE4', bodyColor:'#F3EFE4', padding:10 }
-      },
-      scales:{
-        x:{ grid:{display:false}, ticks:{font:{size:11}} },
-        y:{ grid:{color:'rgba(241,236,223,0.08)'}, ticks:{font:{size:10}, callback:yFmt} }
-      }
-    });
-
-    new Chart(document.getElementById('trendOcc'), {
-      type:'line',
-      data:{ labels: trendLabels, datasets:[
-        { label:'Craters Edge', data:WEEKLY_HISTORY.map(w=>w.ce.occ), borderColor:CE, backgroundColor:CE, spanGaps:false, tension:0.3, pointRadius:4 },
-        { label:'Warangi Ridge', data:WEEKLY_HISTORY.map(w=>w.wr.occ), borderColor:WR, backgroundColor:WR, spanGaps:false, tension:0.3, pointRadius:4 }
-      ]},
-      options: trendOptsBase(fmtPct)
-    });
-
-    new Chart(document.getElementById('trendFwd'), {
-      type:'line',
-      data:{ labels: trendLabels, datasets:[
-        { label:'Craters Edge', data:WEEKLY_HISTORY.map(w=>w.ce.fwd), borderColor:CE, backgroundColor:CE, spanGaps:false, tension:0.3, pointRadius:4 },
-        { label:'Warangi Ridge', data:WEEKLY_HISTORY.map(w=>w.wr.fwd), borderColor:WR, backgroundColor:WR, spanGaps:false, tension:0.3, pointRadius:4 }
-      ]},
-      options: trendOptsBase(fmtPct)
-    });
-
-    new Chart(document.getElementById('trendSecRev'), {
-      type:'bar',
-      data:{ labels: trendLabels, datasets:[
-        { label:'Craters Edge', data:WEEKLY_HISTORY.map(w=>w.ce.secRev), backgroundColor:CE, borderRadius:2 },
-        { label:'Warangi Ridge', data:WEEKLY_HISTORY.map(w=>w.wr.secRev), backgroundColor:WR, borderRadius:2 }
-      ]},
-      options: trendOptsBase(fmtUSD)
-    });
-
-    const commonOpts = (yFmt) => ({
-      responsive:true, maintainAspectRatio:false,
-      interaction:{mode:'index', intersect:false},
-      plugins:{
-        legend:{ position:'bottom', labels:{ boxWidth:9, boxHeight:9, usePointStyle:true, pointStyle:'circle', padding:14, font:{size:11} } },
-        tooltip:{
-          backgroundColor:'#1C2921', borderColor:'rgba(241,236,223,0.2)', borderWidth:1,
-          titleColor:'#F3EFE4', bodyColor:'#F3EFE4', padding:10, titleFont:{size:12,weight:'600'}, bodyFont:{size:12},
-          callbacks:{ label: (ctx)=> ctx.parsed.y==null ? ` ${ctx.dataset.label}: not provided` : ` ${ctx.dataset.label}: ${yFmt(ctx.parsed.y)}` }
-        }
-      },
-      scales:{
-        x:{ stacked:true, grid:{display:false}, ticks:{font:{size:11}} },
-        y:{ stacked:true, grid:{color:'rgba(241,236,223,0.08)'}, ticks:{ font:{size:10}, callback:(v)=>yFmt(v) } }
-      }
-    });
-
-    new Chart(document.getElementById('chartMtd'), {
-      type:'bar',
-      data:{ labels:['MTD Actual','MTD Budget','Month-End\nForecast'], datasets:[
-        { label:'Craters Edge', data:[222113,384455,391964], backgroundColor:CE, borderRadius:2 },
-        { label:'Warangi Ridge', data:[18754,280466,33095], backgroundColor:WR, borderRadius:2 }
-      ]},
-      options: commonOpts(fmtUSD)
-    });
-
-    new Chart(document.getElementById('chartYtd'), {
-      type:'bar',
-      data:{ labels:['Actual 2026\n17 Sept','Budget 2026\n17 Sept','Actual 2026\n13 Sept','Actual 2025 (LY)\n13 Sept'], datasets:[
-        { label:'Craters Edge', data:[2077481,4000109,2027127,1997018], backgroundColor:CE, borderRadius:2 },
-        { label:'Warangi Ridge', data:[432942,2360523,432942,70907], backgroundColor:WR, borderRadius:2 }
-      ]},
-      options: commonOpts(fmtUSDk)
-    });
-
-    new Chart(document.getElementById('chartDept'), {
-      type:'bar',
-      data:{ labels:['Craters Edge','Warangi Ridge'], datasets:[
-        { label:'Bar', data:[0,0], backgroundColor:'#7FA36B', borderRadius:2 },
-        { label:'Shop', data:[180,0], backgroundColor:'#C7A15A', borderRadius:2 },
-        { label:'Activity', data:[0,0], backgroundColor:'#B0855C', borderRadius:2 },
-        { label:'Meals', data:[0,0], backgroundColor:'#C7623F', borderRadius:2 },
-        { label:'Spa', data:[480,0], backgroundColor:'#8C7EA6', borderRadius:2 }
-      ]},
-      options: commonOpts(fmtUSD)
-    });
-  } catch (e) {
-    console.error('Dashboard chart rendering failed:', e);
-    chartsUnavailable();
-  }
-}
+try{draw();}catch(e){console.error(e);}
+if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{(window._c||[]).forEach(c=>c.destroy());try{draw();}catch(e){}});}
 </script>
-
 </body>
 </html>
